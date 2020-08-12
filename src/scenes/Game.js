@@ -1,8 +1,9 @@
 import Phaser from "phaser";
 import mp3 from "../assets/Orbital\ Colossus.mp3";
-import background from "../assets/scifi_platform_BG1.jpg";
+import background from "../assets/background.png";
 import tiles from "../assets/scifi_platformTiles_32x32.png";
-import star from "../assets/star.png"
+import star from "../assets/star.png";
+import bullet from "../assets/bullet.png";
 import { accelerate, decelerate } from "../utils";
 
 let box;
@@ -23,6 +24,7 @@ export default new Phaser.Class({
     });
 
     this.load.image("star", star);
+    this.load.image("bullet", bullet);
   },
   create: function create() {
     this.add.image(400, 300, "background");
@@ -70,9 +72,19 @@ export default new Phaser.Class({
     const { velocity } = box.body;
 
     if (cursors.space.isDown) {
-      const x = decelerate(velocity.x);
-      const y = decelerate(velocity.y);
-      box.setVelocity(x, y)
+ 
+      const bullets = this.physics.add.group({
+        key: 'bullet',
+        setScale: { x: 1, y: 1 },
+        setXY: { x: box.x + 50, y: box.y },
+      });
+
+      bullets.children.iterate(function (child) {
+        child.setVelocityX(250);
+        // child.setCollideWorldBounds(true);
+        child.checkWorldBounds = true;
+        child.outOfBoundsKill = true;
+      });
     }
 
     if (cursors.up.isDown) box.setVelocityY(accelerate(velocity.y, -1));
