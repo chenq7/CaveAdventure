@@ -1,13 +1,19 @@
 import Phaser from "phaser";
 import mp3 from "../assets/Orbital\ Colossus.mp3";
 import background from "../assets/background.png";
-import tiles from "../assets/scifi_platformTiles_32x32.png";
-import star from "../assets/star.png";
+import character from "../assets/character.png";
+import bat from "../assets/bat.png";
 import bullet from "../assets/bullet.png";
 import { accelerate, decelerate } from "../utils";
 
-let box;
+let player;
 let cursors;
+let bullets;
+let spacebar;
+let time = 0;
+let bats;
+let enemies = 90;
+let moveSpd = 300;
 
 export default new Phaser.Class({
   Extends: Phaser.Scene,
@@ -18,25 +24,25 @@ export default new Phaser.Class({
   preload: function preload() {
     this.load.image("background", background);
 
-    this.load.spritesheet('tiles', tiles, {
+    this.load.spritesheet('character', character, {
       frameWidth: 32,
       frameHeight: 32
     });
 
-    this.load.image("star", star);
+    this.load.image("bat", bat);
     this.load.image("bullet", bullet);
   },
   create: function create() {
     this.add.image(400, 300, "background");
 
-    const stars = this.physics.add.group({
-      key: 'star',
-      repeat: 11,
+    bats = this.physics.add.group({
+      key: 'bat',
+      repeat: 15,
       setScale: {x: 0.2, y: 0.2 },
-      setXY: { x:400, y: 300 }
+      setXY: { x:750, y: 300 }
     });
 
-    stars.children.iterate(function (child) {
+    bats.children.iterate(function (child) {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
       child.setVelocityX(150 - Math.random() * 300);
       child.setVelocityY(150 - Math.random() * 300);
@@ -45,38 +51,58 @@ export default new Phaser.Class({
     });
 
     cursors = this.input.keyboard.createCursorKeys();
+    spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    box = this.physics.add.image(400, 100, "tiles", 15);
 
-    const processCollision = (box, star) => {
-      star.destroy();
-      const starsLeft = stars.countActive();
-      if (starsLeft === 0) {
-        this.scene.start('winscreen');
+    player = this.physics.add.image(400, 100, "character", 15);
+
+    const processCollision = (player, bat) => {
+      bat.destroy();
+      const batsLeft = bats.countActive();
+      enemies--;
+      if (enemies === 0) {
+        this.scene.batt('winscreen');
       }
     }
 
     this.physics.add.collider(
-      stars,
-      box,
+      bats,
+      player,
       processCollision,
       null,
       this
     );
 
-
-    box.setBounce(1, 1);
-    box.setCollideWorldBounds(true);
+    // player.setBounce(1, 1);
+    player.setCollideWorldBounds(true);
   },
   update: function () {
-    const { velocity } = box.body;
 
-    if (cursors.space.isDown) {
+    if (time > 0 && time % 200 === 0){
+      bats = this.physics.add.group({
+        key: 'bat',
+        repeat: 15,
+        setScale: { x: 0.2, y: 0.2 },
+        setXY: { x: 750, y: 300 }
+      });
+
+      bats.children.iterate(function (child) {
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        child.setVelocityX(150 - Math.random() * 300);
+        child.setVelocityY(150 - Math.random() * 300);
+        child.setBounce(1, 1);
+        child.setCollideWorldBounds(true);
+      });
+    }
+
+    time += 1;
+
+    if (Phaser.Input.Keyboard.JustDown(spacebar)) {
  
-      const bullets = this.physics.add.group({
+      bullets = this.physics.add.group({
         key: 'bullet',
         setScale: { x: 1, y: 1 },
-        setXY: { x: box.x + 50, y: box.y },
+        setXY: { x: player.x + 50, y: player.y },
       });
 
       bullets.children.iterate(function (child) {
@@ -87,9 +113,11 @@ export default new Phaser.Class({
       });
     }
 
-    if (cursors.up.isDown) box.setVelocityY(accelerate(velocity.y, -1));
-    if (cursors.right.isDown) box.setVelocityX(accelerate(velocity.x, 1));
-    if (cursors.down.isDown) box.setVelocityY(accelerate(velocity.y, 1));
-    if (cursors.left.isDown) box.setVelocityX(accelerate(velocity.x, -1));
+    player.setDrag(2000);
+    if (cursors.up.isDown) player.setVelocityY(-moveSpd);
+    if (cursors.right.isDown) player.setVelocityX(moveSpd);
+    if (cursors.down.isDown) player.setVelocityY(moveSpd);
+    if (cursors.left.isDown) player.setVelocityX(-moveSpd);
+
   }
 });
