@@ -12,7 +12,7 @@ let bullets;
 let spacebar;
 let time = 0;
 let bats;
-let enemies = 90;
+let enemies;
 let moveSpd = 300;
 
 export default new Phaser.Class({
@@ -35,6 +35,7 @@ export default new Phaser.Class({
   create: function create() {
     this.add.image(400, 300, "background");
 
+    enemies = 16;
     bats = this.physics.add.group({
       key: 'bat',
       repeat: 15,
@@ -61,7 +62,7 @@ export default new Phaser.Class({
       const batsLeft = bats.countActive();
       enemies--;
       if (enemies === 0) {
-        this.scene.batt('winscreen');
+        this.scene.start('winscreen');
       }
     }
 
@@ -79,12 +80,18 @@ export default new Phaser.Class({
   update: function () {
 
     if (time > 0 && time % 200 === 0){
-      bats = this.physics.add.group({
-        key: 'bat',
-        repeat: 15,
-        setScale: { x: 0.2, y: 0.2 },
-        setXY: { x: 750, y: 300 }
-      });
+      // bats = this.physics.add.group({
+      //   key: 'bat',
+      //   repeat: 15,
+      //   setScale: { x: 0.2, y: 0.2 },
+      //   setXY: { x: 750, y: 300 }
+      // });
+      // bats.children.add({
+      //   key: 'bat',
+      //   repeat: 15,
+      //   setScale: { x: 0.2, y: 0.2 },
+      //   setXY: { x: 750, y: 300 }
+      // });
 
       bats.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));

@@ -17,8 +17,8 @@ export default new Phaser.Class({
 
     this.add.text(270, 300, "Press space to start.")
     this.add.text(270, 315, "Move with up, down, left, right.")
-    this.add.text(270, 330, "Press spacebar to brake.")
-    this.add.text(270, 345, "Collect all the stars to win.")
+    this.add.text(270, 330, "Press spacebar to shoot.")
+    this.add.text(270, 345, "Kill all enemies to win.")
   },
   update: function () {
 
