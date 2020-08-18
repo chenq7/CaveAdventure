@@ -24,16 +24,21 @@ export default new Phaser.Class({
   preload: function preload() {
     this.load.image("background", background);
 
-    this.load.spritesheet('character', character, {
-      frameWidth: 32,
-      frameHeight: 32
+    this.load.spritesheet("character", character, {
+      frameWidth: 22,
+      frameHeight: 31
     });
 
     this.load.image("bat", bat);
-    this.load.image("bullet", bullet);
+
+    this.load.spritesheet("bullet", bullet, {
+      frameWidth: 29,
+      frameHeight: 28,
+    });
   },
   create: function create() {
-    this.add.image(400, 300, "background");
+    this.background = this.add.image(0, 0, "background");
+    this.background.setOrigin(0,0);
 
     enemies = 16;
     bats = this.physics.add.group({
@@ -51,11 +56,13 @@ export default new Phaser.Class({
       child.setCollideWorldBounds(true);
     });
 
+    bats.scale.setTo(2, 2);
+
     cursors = this.input.keyboard.createCursorKeys();
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 
-    player = this.physics.add.image(400, 100, "character", 15);
+    player = this.physics.add.image(0, 0, "character");
 
     const processCollision = (player, bat) => {
       bat.destroy();

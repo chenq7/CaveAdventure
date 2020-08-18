@@ -1,0 +1,30 @@
+
+body {
+  margin: 0;
+  background-image: url("/assets/main_background.png");
+  background-size: cover;
+}
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+  font-weight: 600;
+  color: yellow;
+  margin: 10px;
+}
+
+.canvas-container {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #e0deda;
+}
+
+canvas {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
