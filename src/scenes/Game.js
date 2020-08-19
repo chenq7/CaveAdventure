@@ -3,9 +3,10 @@ import mp3 from "../assets/Orbital\ Colossus.mp3";
 import background from "../assets/game_background.jpg";
 import character from "../assets/character.png";
 import bat from "../assets/bats.png";
-import bullet from "../assets/bullet.png";
+import beam from "../assets/beam.png";
 import explosion from "../assets/explosion.png";
-import { accelerate, decelerate } from "../utils";
+import Beam from "./Beam.js";
+import Bat from "./Bat.js";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -30,7 +31,7 @@ class Game extends Phaser.Scene {
       frameHeight: 16
     })
 
-    this.load.spritesheet("bullet", bullet, {
+    this.load.spritesheet("beam", beam, {
       frameWidth: 16,
       frameHeight: 16,
     });
@@ -47,17 +48,6 @@ class Game extends Phaser.Scene {
     this.player.setScale(1.5);
     this.player.setCollideWorldBounds(true);
     this.moveSpd = 300;
-    //this.player.flipY = true;
-    //this.player.angle += 3;
-
-    this.bat1 = this.add.sprite(800, 100, "bat");
-    this.bat2 = this.add.sprite(800, 300, "bat");
-    this.bat3 = this.add.sprite(800, 500, "bat");
-
-    this.bat1.setScale(1.5);
-    this.bat2.setScale(1.5);
-    this.bat3.setScale(1.5);
-
 
     this.anims.create({
       key: "bat_animation",
@@ -74,40 +64,42 @@ class Game extends Phaser.Scene {
       hideOnComplete: true
     })
 
-    this.bat1.play("bat_animation");
-    this.bat2.play("bat_animation");
-    this.bat3.play("bat_animation");
+    this.anims.create({
+      key: "beam_animation",
+      frames: this.anims.generateFrameNumbers("beam"),
+      frameRate: 20,
+      repeat: -1
+    })
 
+    this.monsters = this.add.group();
+    new Bat(this, 800, 100);
+    new Bat(this, 800, 300);
+    new Bat(this, 800, 500);
+
+    this.projectiles = this.add.group();
+    this.physics.add.collider(this.projectiles, this.monsters, function(projectile, monster){
+      monster.destroy();
+      projectile.destroy();
+    });
   }
 
   update() {
-    this.moveBat(this.bat1, 1);
-    this.moveBat(this.bat2, 2);
-    this.moveBat(this.bat3, 3);
-
     this.movePlayer();
 
     this.background.tilePositionX -= 0.5;
+
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+      this.shootBeam();
+    }
+
+    for (let i = 0; i < this.projectiles.getChildren().length; i++){
+      let beam = this.projectiles.getChildren()[i];
+      beam.update();
+    }
   //   if (time > 0 && time % 200 === 0){
   //   }
 
   //   time += 1;
-
-  //   if (Phaser.Input.Keyboard.JustDown(spacebar)) {
- 
-  //     bullets = this.physics.add.group({
-  //       key: 'bullet',
-  //       setScale: { x: 1, y: 1 },
-  //       setXY: { x: this.player.x + 50, y: this.player.y },
-  //     });
-
-  //     bullets.children.iterate(function (child) {
-  //       child.setVelocityX(250);
-  //       // child.setCollideWorldBounds(true);
-  //       child.checkWorldBounds = true;
-  //       child.outOfBoundsKill = true;
-  //     });
-  //   }
 
   }
 
@@ -141,6 +133,10 @@ class Game extends Phaser.Scene {
     } else if (this.cursorKeys.down.isDown) {
       this.player.setVelocityY(this.moveSpd);
     }
+  }
+
+  shootBeam() {
+    let beam = new Beam(this);
   }
 };
 
