@@ -15,12 +15,12 @@ class Bat extends Phaser.GameObjects.Sprite {
     scene.physics.world.enableBody(this);
     this.body.velocity.x = -150;
 
-    scene.monsters.add(this);
+    scene.enemies.add(this);
   }
 
   update() {
-
     if (this.x < 0) {
+      console.log("out of bounds!");
       this.destroy();
     }
   }

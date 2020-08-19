@@ -1,40 +1,11 @@
 import Phaser from "phaser";
 import mp3 from "../assets/Orbital\ Colossus.mp3";
-import background from "../assets/game_background.jpg";
-import character from "../assets/character.png";
-import bat from "../assets/bats.png";
-import beam from "../assets/beam.png";
-import explosion from "../assets/explosion.png";
 import Beam from "./Beam.js";
 import Bat from "./Bat.js";
 
 class Game extends Phaser.Scene {
   constructor() {
     super("game");
-  }
-
-  preload() {
-    this.load.image("background", background);
-
-    this.load.spritesheet("character", character, {
-      frameWidth: 22,
-      frameHeight: 31
-    });
-
-    this.load.spritesheet("bat", bat, {
-      frameWidth: 27,
-      frameHeight: 27
-    });
-
-    this.load.spritesheet("explosion", explosion, {
-      frameWidth: 16,
-      frameHeight: 16
-    })
-
-    this.load.spritesheet("beam", beam, {
-      frameWidth: 16,
-      frameHeight: 16,
-    });
   }
 
   create() {
@@ -49,41 +20,58 @@ class Game extends Phaser.Scene {
     this.player.setCollideWorldBounds(true);
     this.moveSpd = 300;
 
-    this.anims.create({
-      key: "bat_animation",
-      frames: this.anims.generateFrameNumbers("bat"),
-      frameRate: 20,
-      repeat: -1
-    })
-
-    this.anims.create({
-      key: "explode",
-      frames: this.anims.generateFrameNames("bat"),
-      frameRate: 20,
-      repeat: 0,
-      hideOnComplete: true
-    })
-
-    this.anims.create({
-      key: "beam_animation",
-      frames: this.anims.generateFrameNumbers("beam"),
-      frameRate: 20,
-      repeat: -1
-    })
-
-    this.monsters = this.add.group();
-    new Bat(this, 800, 100);
-    new Bat(this, 800, 300);
-    new Bat(this, 800, 500);
+    this.enemies = this.add.group();
 
     this.projectiles = this.add.group();
-    this.physics.add.collider(this.projectiles, this.monsters, function(projectile, monster){
-      monster.destroy();
-      projectile.destroy();
-    });
+
+    this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
+    this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
+
+    this.score = 0;
+
+    // Add HUD background
+    let graphics = this.add.graphics();
+    graphics.fillStyle("0x000000", 1);
+    graphics.beginPath();
+    graphics.moveTo(0, 0);
+    graphics.lineTo(900, 0);
+    graphics.lineTo(900, 30);
+    graphics.lineTo(0, 30);
+    graphics.lineTo(0, 0);
+    graphics.closePath();
+    graphics.fillPath();
+
+    let scoreFormated = this.zeroPad(this.score, 6);
+    this.scoreLabel = this.add.bitmapText(750, 7.5, "pixelFont", "SCORE " + scoreFormated, 25);
+
+    this.maxWaves = 5;
+    this.currWave = 0;
+    this.currEnemies = 0;
+    this.numEnemies = 0;
   }
 
   update() {
+
+    if (this.enemies.getChildren().length === 0){
+      if (this.currWave < this.maxWaves){
+        this.currWave++;
+        this.numEnemies += 4;
+        let currY = 80;
+        let currX = 800;
+        for (let i = 0; i < this.numEnemies; i++){
+          if (currY > 580){
+            currY = currY == 680 ? 115 : 80;
+            currX = currX + 100;
+          }
+          this.generateBat(currX, currY);
+          currY += 150;
+        }
+      }
+      else {
+        this.scene.start("winscreen");
+      }
+    }
+
     this.movePlayer();
 
     this.background.tilePositionX -= 0.5;
@@ -96,11 +84,21 @@ class Game extends Phaser.Scene {
       let beam = this.projectiles.getChildren()[i];
       beam.update();
     }
-  //   if (time > 0 && time % 200 === 0){
-  //   }
+ 
+    for (let i = 0; i < this.enemies.getChildren().length; i++) {
+      let enemy = this.enemies.getChildren()[i];
+      enemy.update();
+    }
 
-  //   time += 1;
+  }
 
+  // 4.1 zero pad format function
+  zeroPad(number, size) {
+    let stringNumber = String(number);
+    while (stringNumber.length < size) {
+      stringNumber = "0" + stringNumber;
+    }
+    return stringNumber;
   }
 
   moveBat(bat, speed) {
@@ -137,6 +135,26 @@ class Game extends Phaser.Scene {
 
   shootBeam() {
     let beam = new Beam(this);
+  }
+
+  hurtPlayer(player, enemy){
+    enemy.destroy();
+    player.x = 200;
+    player.y = 300;
+    this.score += 175;
+  }
+
+  hitEnemy(projectile, enemy){
+    projectile.destroy();
+    enemy.destroy();
+    this.score += 175;
+
+    var scoreFormated = this.zeroPad(this.score, 6);
+    this.scoreLabel.text = "SCORE " + scoreFormated;  
+  }
+
+  generateBat(x, y){
+    let bat = new Bat(this, x, y);
   }
 };
 
