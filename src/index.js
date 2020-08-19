@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import MainMenu from "./scenes/MainMenu";
 import Game from "./scenes/Game";
 import WinScreen from "./scenes/WinScreen";
+import GameOver from "./scenes/GameOver";
 import "./styles/reset.css";
 import "./styles/index.css";
 
@@ -15,7 +16,7 @@ var config = {
       gravity: { y: 0, x: 0 },
     },
   },
-  scene: [MainMenu, Game, WinScreen]
+  scene: [MainMenu, Game, WinScreen, GameOver]
 };
 
 var game = new Phaser.Game(config);

@@ -6,6 +6,10 @@ import beam from "../assets/beam.png";
 import explosion from "../assets/explosion.png";
 import fontFile from "../assets/font/font.xml";
 import fontImage from "../assets/font/font.png";
+import beamSound from "../assets/sound/beam.mp3";
+import music from "../assets/sound/Lachrymose.mp3";
+import explodeSound from "../assets/sound/explosion.mp3";
+import pickupSound from "../assets/sound/pickup.mp3";
 
 class MainMenu extends Phaser.Scene {
   constructor() {
@@ -36,6 +40,11 @@ class MainMenu extends Phaser.Scene {
     });
 
     this.load.bitmapFont("pixelFont", fontImage, fontFile);
+
+    this.load.audio("beam_sound", beamSound);
+    this.load.audio("explode_sound", explodeSound);
+    this.load.audio("pickup_sound", pickupSound);
+    this.load.audio("music", music);
   }
 
   create() {
@@ -63,10 +72,10 @@ class MainMenu extends Phaser.Scene {
       repeat: -1
     })
 
-    this.add.text(270, 300, "Press space to start.")
-    this.add.text(270, 315, "Move with up, down, left, right.")
-    this.add.text(270, 330, "Press spacebar to shoot.")
-    this.add.text(270, 345, "Kill all enemies to win.")
+    this.add.text(325, 285, "Press space to start.")
+    this.add.text(325, 300, "Move with up, down, left, right.")
+    this.add.text(325, 315, "Press spacebar to shoot.")
+    this.add.text(325, 330, "Kill all enemies to win.")
   }
 
   update() {

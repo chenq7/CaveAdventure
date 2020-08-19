@@ -8,6 +8,10 @@ class WinScreen extends Phaser.Scene {
     super("winscreen");
   }
   
+  init(data) {
+    this.score = data.score;
+  }
+  
   create() {
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -15,7 +19,9 @@ class WinScreen extends Phaser.Scene {
     graphics.fillStyle(0x000000, 1);
     graphics.fillRect(0, 0, 800, 600);
 
-    this.add.text(275, 300, "You win! Press space to restart.")
+    this.add.text(350, 300, "You win!");
+    this.add.text(350, 315, `You score is ${this.score}`);
+    this.add.text(350, 330, "Press space to restart.");
   }
 
   update() {

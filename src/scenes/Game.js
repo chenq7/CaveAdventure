@@ -10,6 +10,22 @@ class Game extends Phaser.Scene {
   }
 
   create() {
+
+    this.beamSound = this.sound.add("beam_sound", {volume: 0.3});
+    this.explodeSound = this.sound.add("explode_sound", { volume: 0.5 });
+    this.pickupSound = this.sound.add("pickup_sound");
+    this.music = this.sound.add("music");
+    let musicSettings = {
+      mute: false,
+      volume: 0.7,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0
+    };
+    this.music.play(musicSettings);
+
     this.background = this.add.tileSprite(0, 0, 1728, 1080, "background");
     this.background.setOrigin(0,0);
 
@@ -29,6 +45,7 @@ class Game extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
 
     this.score = 0;
+    this.hp = 100;
 
     // Add HUD background
     let graphics = this.add.graphics();
@@ -44,6 +61,7 @@ class Game extends Phaser.Scene {
 
     let scoreFormated = this.zeroPad(this.score, 6);
     this.scoreLabel = this.add.bitmapText(750, 7.5, "pixelFont", "SCORE " + scoreFormated, 25);
+    this.hpLabel = this.add.bitmapText(30, 7.5, "pixelFont", "HP " + this.hp, 25);
 
     this.maxWaves = 5;
     this.currWave = 0;
@@ -52,6 +70,11 @@ class Game extends Phaser.Scene {
   }
 
   update() {
+
+    if (this.hp <= 0){
+      this.music.pause();
+      this.scene.start('gameover', {score: this.score});
+    }
 
     if (this.enemies.getChildren().length === 0){
       if (this.currWave < this.maxWaves){
@@ -69,7 +92,8 @@ class Game extends Phaser.Scene {
         }
       }
       else {
-        this.scene.start("winscreen");
+        this.music.pause();
+        this.scene.start("winscreen", { score: this.score });
       }
     }
 
@@ -119,11 +143,13 @@ class Game extends Phaser.Scene {
 
   shootBeam() {
     let beam = new Beam(this);
+    this.beamSound.play();
   }
 
   hurtPlayer(player, enemy){
     if (this.player.alpha < 1) return;
-    
+    this.explodeSound.play();
+    this.loseHp();
     enemy.destroy();
     let explosion = new Explosion(this, enemy.x, enemy.y);
     this.score += 175;
@@ -146,7 +172,7 @@ class Game extends Phaser.Scene {
   hitEnemy(projectile, enemy){
 
     let explosion = new Explosion(this, enemy.x, enemy.y);
-
+    this.explodeSound.play();
     projectile.destroy();
     enemy.destroy();
     this.score += 175;
@@ -155,6 +181,11 @@ class Game extends Phaser.Scene {
 
   generateBat(x, y){
     let bat = new Bat(this, x, y);
+  }
+
+  loseHp() {
+    this.hp -= 34;
+    this.hpLabel.text = "HP " + this.hp;
   }
 
   addScore() {
