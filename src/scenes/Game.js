@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import mp3 from "../assets/Orbital\ Colossus.mp3";
 import Beam from "./Beam.js";
 import Bat from "./Bat.js";
+import Explosion from "./Explosion.js";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -101,23 +102,6 @@ class Game extends Phaser.Scene {
     return stringNumber;
   }
 
-  moveBat(bat, speed) {
-    bat.x -= speed;
-    if (bat.x < 0) {
-      this.resetPosition(bat);
-    }
-  }
-
-  resetPosition(bat) {
-    bat.x = 800;
-    // let randomX = Phaser.Math.Between(0, 700);
-  }
-
-  destroy(pointer, gameObject) {
-    gameObject.setTexture("explosion");
-    gameObject.play("explode");
-  }
-
   movePlayer() {
     this.player.setDrag(1000);
     if (this.cursorKeys.left.isDown){
@@ -138,23 +122,44 @@ class Game extends Phaser.Scene {
   }
 
   hurtPlayer(player, enemy){
+    if (this.player.alpha < 1) return;
+    
     enemy.destroy();
-    player.x = 200;
-    player.y = 300;
+    let explosion = new Explosion(this, enemy.x, enemy.y);
     this.score += 175;
+    this.addScore(); 
+
+    this.immune();
+  }
+
+  immune() {
+    this.player.alpha = 0.5;
+
+    this.time.addEvent({
+      delay: 500,
+      callback: () => { this.player.alpha = 1 },
+      callbackScope: this,
+      loop: false
+    });
   }
 
   hitEnemy(projectile, enemy){
+
+    let explosion = new Explosion(this, enemy.x, enemy.y);
+
     projectile.destroy();
     enemy.destroy();
     this.score += 175;
-
-    var scoreFormated = this.zeroPad(this.score, 6);
-    this.scoreLabel.text = "SCORE " + scoreFormated;  
+    this.addScore(); 
   }
 
   generateBat(x, y){
     let bat = new Bat(this, x, y);
+  }
+
+  addScore() {
+    let scoreFormated = this.zeroPad(this.score, 6);
+    this.scoreLabel.text = "SCORE " + scoreFormated;  
   }
 };
 

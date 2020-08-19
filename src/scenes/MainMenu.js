@@ -50,7 +50,7 @@ class MainMenu extends Phaser.Scene {
 
     this.anims.create({
       key: "explode",
-      frames: this.anims.generateFrameNames("bat"),
+      frames: this.anims.generateFrameNames("explosion"),
       frameRate: 20,
       repeat: 0,
       hideOnComplete: true
