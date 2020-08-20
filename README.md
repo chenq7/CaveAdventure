@@ -1,5 +1,5 @@
 
-Fantasy Shooter is a survival 2D shooter game where the user controls a knight and fight off waves of monsters to win.
+Cave Adventure is a survival 2D shooter game where the user controls a knight and fight off waves of monsters to win.
 
 ## Getting Started
 

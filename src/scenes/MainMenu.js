@@ -1,15 +1,18 @@
 import Phaser from "phaser";
-import background from "../assets/game_background.jpg";
-import character from "../assets/character.png";
-import bat from "../assets/bats.png";
-import beam from "../assets/beam.png";
-import explosion from "../assets/explosion.png";
+import background from "../assets/images/game_background.jpg";
+import character from "../assets/images/character.png";
+import bat from "../assets/sprites/bats.png";
+import beam from "../assets/sprites/beam.png";
+import explosion from "../assets/sprites/explosion.png";
 import fontFile from "../assets/font/font.xml";
 import fontImage from "../assets/font/font.png";
 import beamSound from "../assets/sound/beam.mp3";
 import music from "../assets/sound/Lachrymose.mp3";
 import explodeSound from "../assets/sound/explosion.mp3";
 import pickupSound from "../assets/sound/pickup.mp3";
+import healthUp from "../assets/images/health.png";
+import scoreUp from "../assets/images/score.png";
+import powerUp from "../assets/images/powerup.png";
 
 class MainMenu extends Phaser.Scene {
   constructor() {
@@ -18,6 +21,9 @@ class MainMenu extends Phaser.Scene {
 
   preload() {
     this.load.image("background", background);
+    this.load.image("healthUp", healthUp);
+    this.load.image("scoreUp", scoreUp);
+    this.load.image("powerUp", powerUp);
 
     this.load.spritesheet("character", character, {
       frameWidth: 22,

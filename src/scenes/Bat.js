@@ -6,7 +6,7 @@ class Bat extends Phaser.GameObjects.Sprite {
     let x = xCoord;
     let y = yCoord;
 
-    super(scene, x, y, "beam");
+    super(scene, x, y, "bat");
 
     scene.add.existing(this);
 
@@ -20,7 +20,6 @@ class Bat extends Phaser.GameObjects.Sprite {
 
   update() {
     if (this.x < 0) {
-      console.log("out of bounds!");
       this.destroy();
     }
   }

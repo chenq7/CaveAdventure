@@ -1,8 +1,8 @@
 import Phaser from "phaser";
-import mp3 from "../assets/Orbital\ Colossus.mp3";
 import Beam from "./Beam.js";
 import Bat from "./Bat.js";
 import Explosion from "./Explosion.js";
+import PowerUp from "./PowerUp.js";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -38,14 +38,15 @@ class Game extends Phaser.Scene {
     this.moveSpd = 300;
 
     this.enemies = this.add.group();
-
     this.projectiles = this.add.group();
+    this.powerups = this.add.group();
 
     this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
 
     this.score = 0;
     this.hp = 100;
+    this.time = 0;
 
     // Add HUD background
     let graphics = this.add.graphics();
@@ -67,6 +68,7 @@ class Game extends Phaser.Scene {
     this.currWave = 0;
     this.currEnemies = 0;
     this.numEnemies = 0;
+    this.powerupTypes = ["healthUp", "scoreUp", "powerUp"];
   }
 
   update() {
@@ -115,6 +117,12 @@ class Game extends Phaser.Scene {
       enemy.update();
     }
 
+    if (this.time % 100 === 0){
+      let powerup = this.powerupTypes[Math.floor(Math.random() * 3)];
+      new PowerUp(this, powerup);
+    }
+    this.time += 1;
+
   }
 
   // 4.1 zero pad format function
@@ -142,7 +150,7 @@ class Game extends Phaser.Scene {
   }
 
   shootBeam() {
-    let beam = new Beam(this);
+    new Beam(this);
     this.beamSound.play();
   }
 
@@ -151,7 +159,7 @@ class Game extends Phaser.Scene {
     this.explodeSound.play();
     this.loseHp();
     enemy.destroy();
-    let explosion = new Explosion(this, enemy.x, enemy.y);
+    new Explosion(this, enemy.x, enemy.y);
     this.score += 175;
     this.addScore(); 
 
@@ -171,7 +179,7 @@ class Game extends Phaser.Scene {
 
   hitEnemy(projectile, enemy){
 
-    let explosion = new Explosion(this, enemy.x, enemy.y);
+    new Explosion(this, enemy.x, enemy.y);
     this.explodeSound.play();
     projectile.destroy();
     enemy.destroy();
@@ -180,7 +188,7 @@ class Game extends Phaser.Scene {
   }
 
   generateBat(x, y){
-    let bat = new Bat(this, x, y);
+    new Bat(this, x, y);
   }
 
   loseHp() {
