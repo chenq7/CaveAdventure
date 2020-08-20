@@ -1,10 +1,12 @@
 import Phaser from "phaser";
 
 class Beam extends Phaser.GameObjects.Sprite {
-  constructor(scene){
+  constructor(scene, xCoord, yCoord){
 
-    let x = scene.player.x + 16;
-    let y = scene.player.y;
+    // let x = scene.player.x + 16;
+    // let y = scene.player.y;
+    let x = xCoord;
+    let y = yCoord;
 
     super(scene, x, y, "beam");
 

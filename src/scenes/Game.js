@@ -13,7 +13,7 @@ class Game extends Phaser.Scene {
 
     this.beamSound = this.sound.add("beam_sound", {volume: 0.3});
     this.explodeSound = this.sound.add("explode_sound", { volume: 0.5 });
-    this.pickupSound = this.sound.add("pickup_sound");
+    this.pickupSound = this.sound.add("pickup_sound", {volume: 0.5});
     this.music = this.sound.add("music");
     let musicSettings = {
       mute: false,
@@ -43,10 +43,12 @@ class Game extends Phaser.Scene {
 
     this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
+    this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
 
     this.score = 0;
     this.hp = 100;
-    this.time = 0;
+    this.timer = 0;
+    this.beamUp = 0;
 
     // Add HUD background
     let graphics = this.add.graphics();
@@ -64,7 +66,7 @@ class Game extends Phaser.Scene {
     this.scoreLabel = this.add.bitmapText(750, 7.5, "pixelFont", "SCORE " + scoreFormated, 25);
     this.hpLabel = this.add.bitmapText(30, 7.5, "pixelFont", "HP " + this.hp, 25);
 
-    this.maxWaves = 5;
+    this.maxWaves = 15;
     this.currWave = 0;
     this.currEnemies = 0;
     this.numEnemies = 0;
@@ -117,11 +119,18 @@ class Game extends Phaser.Scene {
       enemy.update();
     }
 
-    if (this.time % 100 === 0){
-      let powerup = this.powerupTypes[Math.floor(Math.random() * 3)];
-      new PowerUp(this, powerup);
+    for (let i = 0; i < this.powerups.getChildren().length; i++) {
+      let powerup = this.powerups.getChildren()[i];
+      powerup.update();
     }
-    this.time += 1;
+
+    if (this.beamUp > 0) this.beamUp--;
+
+    if (this.timer % 300 === 0){
+      let type = this.powerupTypes[Math.floor(Math.random() * 3)];
+      new PowerUp(this, type);
+    }
+    this.timer += 1;
 
   }
 
@@ -150,18 +159,24 @@ class Game extends Phaser.Scene {
   }
 
   shootBeam() {
-    new Beam(this);
-    this.beamSound.play();
+    if (this.beamUp > 0){
+      new Beam(this, this.player.x + 16, this.player.y);
+      this.beamSound.play();
+      new Beam(this, this.player.x + 50, this.player.y);
+      this.beamSound.play();
+    } else {
+      new Beam(this, this.player.x + 16, this.player.y);
+      this.beamSound.play();
+    }
   }
 
   hurtPlayer(player, enemy){
     if (this.player.alpha < 1) return;
     this.explodeSound.play();
-    this.loseHp();
+    this.updateHp(-33);
     enemy.destroy();
     new Explosion(this, enemy.x, enemy.y);
-    this.score += 175;
-    this.addScore(); 
+    this.addScore(175); 
 
     this.immune();
   }
@@ -183,22 +198,39 @@ class Game extends Phaser.Scene {
     this.explodeSound.play();
     projectile.destroy();
     enemy.destroy();
-    this.score += 175;
-    this.addScore(); 
+    this.addScore(175); 
   }
 
   generateBat(x, y){
     new Bat(this, x, y);
   }
 
-  loseHp() {
-    this.hp -= 34;
+  updateHp(num){
+    this.hp += num;
     this.hpLabel.text = "HP " + this.hp;
   }
 
-  addScore() {
+  addScore(num){
+    this.score += num;
     let scoreFormated = this.zeroPad(this.score, 6);
     this.scoreLabel.text = "SCORE " + scoreFormated;  
+  }
+
+  collectPowerup(player, powerup){
+
+    switch(powerup.powerupType()){
+      case "healthUp":
+        this.updateHp(50);
+        break;
+      case "scoreUp":
+        this.addScore(1000);
+        break;
+      case "powerUp":
+        this.beamUp = 700;
+        break;
+    }
+    powerup.destroy();
+    this.pickupSound.play();
   }
 };
 
