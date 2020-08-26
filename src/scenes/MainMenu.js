@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import background from "../assets/images/game_background.jpg";
 import character from "../assets/images/character.png";
 import bat from "../assets/sprites/bats.png";
+import dragon from "../assets/sprites/dragon.png";
 import beam from "../assets/sprites/beam.png";
 import explosion from "../assets/sprites/explosion.png";
 import fontFile from "../assets/font/font.xml";
@@ -35,6 +36,11 @@ class MainMenu extends Phaser.Scene {
       frameHeight: 27
     });
 
+    this.load.spritesheet("dragon", dragon, {
+      frameWidth: 177,
+      frameHeight: 126
+    })
+
     this.load.spritesheet("explosion", explosion, {
       frameWidth: 16,
       frameHeight: 16
@@ -60,6 +66,13 @@ class MainMenu extends Phaser.Scene {
       key: "bat_animation",
       frames: this.anims.generateFrameNumbers("bat"),
       frameRate: 20,
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: "dragon_animation",
+      frames: this.anims.generateFrameNumbers("dragon"),
+      frameRate: 6,
       repeat: -1
     })
 

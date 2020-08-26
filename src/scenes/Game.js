@@ -3,6 +3,7 @@ import Beam from "./Beam.js";
 import Bat from "./Bat.js";
 import Explosion from "./Explosion.js";
 import PowerUp from "./PowerUp.js";
+import Dragon from "./Dragon.js";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -83,7 +84,8 @@ class Game extends Phaser.Scene {
     if (this.enemies.getChildren().length === 0){
       if (this.currWave < this.maxWaves){
         this.currWave++;
-        this.numEnemies += 4;
+        this.numEnemies += this.currWave > 2 ? 2 : 4;
+        if (this.currWave == 3) this.numEnemies = 2;
         let currY = 80;
         let currX = 800;
         for (let i = 0; i < this.numEnemies; i++){
@@ -91,7 +93,11 @@ class Game extends Phaser.Scene {
             currY = currY == 680 ? 115 : 80;
             currX = currX + 100;
           }
-          this.generateBat(currX, currY);
+          if (this.currWave > 2){
+            this.generateDragon(currX, currY);
+          } else {
+            this.generateBat(currX, currY);
+          }
           currY += 150;
         }
       }
@@ -193,16 +199,24 @@ class Game extends Phaser.Scene {
   }
 
   hitEnemy(projectile, enemy){
-
-    new Explosion(this, enemy.x, enemy.y);
-    this.explodeSound.play();
+    
+    enemy.hp -= 1;
     projectile.destroy();
-    enemy.destroy();
-    this.addScore(175); 
+
+    if (enemy.hp <= 0){
+      new Explosion(this, enemy.x, enemy.y);
+      this.explodeSound.play();
+      enemy.destroy();
+      this.addScore(175); 
+    }
   }
 
   generateBat(x, y){
     new Bat(this, x, y);
+  }
+
+  generateDragon(x, y){
+    new Dragon(this, x, y);
   }
 
   updateHp(num){
