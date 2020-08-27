@@ -46,10 +46,16 @@ class Game extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
     this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
 
+    // Game statistics
     this.score = 0;
     this.hp = 100;
     this.timer = 0;
-    this.beamLevel = 4;
+    this.beamLevel = 1;
+    this.maxWaves = 15;
+    this.currWave = 1;
+    this.currEnemies = 0;
+    this.numEnemies = 0;
+    this.powerupTypes = ["healthUp", "scoreUp", "powerUp"];
 
     // Add HUD background
     let graphics = this.add.graphics();
@@ -66,12 +72,7 @@ class Game extends Phaser.Scene {
     let scoreFormated = this.zeroPad(this.score, 6);
     this.scoreLabel = this.add.bitmapText(750, 7.5, "pixelFont", "SCORE " + scoreFormated, 25);
     this.hpLabel = this.add.bitmapText(30, 7.5, "pixelFont", "HP " + this.hp, 25);
-
-    this.maxWaves = 15;
-    this.currWave = 0;
-    this.currEnemies = 0;
-    this.numEnemies = 0;
-    this.powerupTypes = ["healthUp", "scoreUp", "powerUp"];
+    this.waveLabel = this.add.bitmapText(380, 7.5, "pixelFont", "WAVE " + this.currWave, 25);
   }
 
   update() {
@@ -84,7 +85,8 @@ class Game extends Phaser.Scene {
     if (this.enemies.getChildren().length === 0){
       if (this.currWave < this.maxWaves){
         this.currWave++;
-        this.numEnemies += this.currWave > 2 ? 2 : 4;
+        this.waveLabel.text = "WAVE " + this.currWave;
+        this.numEnemies += this.currWave > 3 ? 2 : 4;
         if (this.currWave == 3) this.numEnemies = 2;
         let currY = 80;
         let currX = 800;
@@ -130,7 +132,7 @@ class Game extends Phaser.Scene {
       powerup.update();
     }
 
-    if (this.timer % 100 === 0){
+    if (this.timer % 200 === 0){
       let type = this.powerupTypes[Math.floor(Math.random() * 3)];
       new PowerUp(this, type);
     }
@@ -163,25 +165,21 @@ class Game extends Phaser.Scene {
   }
 
   shootBeam() {
-    console.log(this.beamLevel)
+    this.beamSound.play();
     if (this.beamLevel === 1){
       new Beam(this, this.player.x + 16, this.player.y, "beam", "right");
-      this.beamSound.play();
     } else if (this.beamLevel === 2) {
       new Beam(this, this.player.x + 16, this.player.y - 5, "beam", "right");
       new Beam(this, this.player.x + 16, this.player.y + 5, "beam", "right");
-      this.beamSound.play();
     } else if (this.beamLevel === 3) {
       new Beam(this, this.player.x + 16, this.player.y, "beam", "right");
       new Beam(this, this.player.x + 16, this.player.y, "beam", "topRight");
       new Beam(this, this.player.x + 16, this.player.y, "beam", "bottomRight");
     } else if (this.beamLevel === 4) {
       new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
-      this.beamSound.play();
     } else if (this.beamLevel === 5) {
       new Beam(this, this.player.x + 16, this.player.y -12, "beam2", "right");
       new Beam(this, this.player.x + 16, this.player.y + 12, "beam2", "right");
-      this.beamSound.play();
     } else if (this.beamLevel >= 6) {
       new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
       new Beam(this, this.player.x + 16, this.player.y, "beam2", "topRight");
@@ -192,7 +190,7 @@ class Game extends Phaser.Scene {
   hurtPlayer(player, enemy){
     if (this.player.alpha < 1) return;
     this.explodeSound.play();
-    this.updateHp(-33);
+    this.updateHp(-57);
     enemy.destroy();
     new Explosion(this, enemy.x, enemy.y);
     this.addScore(175); 

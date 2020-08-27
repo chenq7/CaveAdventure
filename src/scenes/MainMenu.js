@@ -9,12 +9,15 @@ import explosion from "../assets/sprites/explosion.png";
 import fontFile from "../assets/font/font.xml";
 import fontImage from "../assets/font/font.png";
 import beamSound from "../assets/sound/beam.mp3";
+import selectSound from "../assets/sound/select.wav";
+import menuMusic from "../assets/sound/I miss you.mp3";
 import music from "../assets/sound/Lachrymose.mp3";
 import explodeSound from "../assets/sound/explosion.mp3";
 import pickupSound from "../assets/sound/pickup.mp3";
 import healthUp from "../assets/images/health.png";
 import scoreUp from "../assets/images/score.png";
 import powerUp from "../assets/images/powerup.png";
+import mainBackground from "../assets/images/background.jpg";
 
 class MainMenu extends Phaser.Scene {
   constructor() {
@@ -23,6 +26,7 @@ class MainMenu extends Phaser.Scene {
 
   preload() {
     this.load.image("background", background);
+    this.load.image("mainBackground", mainBackground);
     this.load.image("healthUp", healthUp);
     this.load.image("scoreUp", scoreUp);
     this.load.image("powerUp", powerUp);
@@ -62,6 +66,8 @@ class MainMenu extends Phaser.Scene {
     this.load.audio("beam_sound", beamSound);
     this.load.audio("explode_sound", explodeSound);
     this.load.audio("pickup_sound", pickupSound);
+    this.load.audio("select_sound", selectSound);
+    this.load.audio("menuMusic", menuMusic);
     this.load.audio("music", music);
   }
 
@@ -104,14 +110,22 @@ class MainMenu extends Phaser.Scene {
       repeat: -1
     })
 
-    this.add.text(325, 285, "Press space to start.")
-    this.add.text(325, 300, "Move with up, down, left, right.")
-    this.add.text(325, 315, "Press spacebar to shoot.")
-    this.add.text(325, 330, "Kill all enemies to win.")
+    this.add.image(450, 300, "mainBackground");
+
+    this.add.text(150, 150, "Cave Adventure", { fontFamily: 'Courier', fontSize: '70px', color: 'pink', strokeThickness: '2' });
+    this.add.text(275, 370, "Move with up, down, left, right.", { fontSize: '18px', color: 'yellow' });
+    this.add.text(275, 400, "Press spacebar to shoot.", { fontSize: '18px', color: 'yellow' });
+    this.add.text(275, 430, "Press space to start.", { fontSize: '18px', color: 'yellow' });
+
+    this.selectSound = this.sound.add("select_sound", { volume: 2 });
+    this.menuMusic = this.sound.add("menuMusic", { volume: 0.3 });
+    this.menuMusic.play();
   }
 
   update() {
     if (this.cursors.space.isDown) {
+      this.selectSound.play();
+      this.menuMusic.pause();
       this.scene.start('game');
     }
   }
