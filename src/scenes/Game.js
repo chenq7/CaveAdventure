@@ -49,7 +49,7 @@ class Game extends Phaser.Scene {
     this.score = 0;
     this.hp = 100;
     this.timer = 0;
-    this.beamUp = 0;
+    this.beamLevel = 4;
 
     // Add HUD background
     let graphics = this.add.graphics();
@@ -130,9 +130,7 @@ class Game extends Phaser.Scene {
       powerup.update();
     }
 
-    if (this.beamUp > 0) this.beamUp--;
-
-    if (this.timer % 300 === 0){
+    if (this.timer % 100 === 0){
       let type = this.powerupTypes[Math.floor(Math.random() * 3)];
       new PowerUp(this, type);
     }
@@ -165,14 +163,29 @@ class Game extends Phaser.Scene {
   }
 
   shootBeam() {
-    if (this.beamUp > 0){
-      new Beam(this, this.player.x + 16, this.player.y);
+    console.log(this.beamLevel)
+    if (this.beamLevel === 1){
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "right");
       this.beamSound.play();
-      new Beam(this, this.player.x + 50, this.player.y);
+    } else if (this.beamLevel === 2) {
+      new Beam(this, this.player.x + 16, this.player.y - 5, "beam", "right");
+      new Beam(this, this.player.x + 16, this.player.y + 5, "beam", "right");
       this.beamSound.play();
-    } else {
-      new Beam(this, this.player.x + 16, this.player.y);
+    } else if (this.beamLevel === 3) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "bottomRight");
+    } else if (this.beamLevel === 4) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
       this.beamSound.play();
+    } else if (this.beamLevel === 5) {
+      new Beam(this, this.player.x + 16, this.player.y -12, "beam2", "right");
+      new Beam(this, this.player.x + 16, this.player.y + 12, "beam2", "right");
+      this.beamSound.play();
+    } else if (this.beamLevel >= 6) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "bottomRight");
     }
   }
 
@@ -200,7 +213,7 @@ class Game extends Phaser.Scene {
 
   hitEnemy(projectile, enemy){
     
-    enemy.hp -= 1;
+    enemy.hp -= this.beamLevel > 3 ? 2 : 1;
     projectile.destroy();
 
     if (enemy.hp <= 0){
@@ -232,7 +245,7 @@ class Game extends Phaser.Scene {
 
   collectPowerup(player, powerup){
 
-    switch(powerup.powerupType()){
+    switch(powerup.powerupType){
       case "healthUp":
         this.updateHp(50);
         break;
@@ -240,7 +253,7 @@ class Game extends Phaser.Scene {
         this.addScore(1000);
         break;
       case "powerUp":
-        this.beamUp = 700;
+        this.beamLevel ++;
         break;
     }
     powerup.destroy();

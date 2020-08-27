@@ -4,6 +4,7 @@ import character from "../assets/images/character.png";
 import bat from "../assets/sprites/bats.png";
 import dragon from "../assets/sprites/dragon.png";
 import beam from "../assets/sprites/beam.png";
+import beam2 from "../assets/sprites/beam2.png";
 import explosion from "../assets/sprites/explosion.png";
 import fontFile from "../assets/font/font.xml";
 import fontImage from "../assets/font/font.png";
@@ -51,6 +52,11 @@ class MainMenu extends Phaser.Scene {
       frameHeight: 16,
     });
 
+    this.load.spritesheet("beam2", beam2, {
+      frameWidth: 12,
+      frameHeight: 12,
+    }); 
+
     this.load.bitmapFont("pixelFont", fontImage, fontFile);
 
     this.load.audio("beam_sound", beamSound);
@@ -87,6 +93,13 @@ class MainMenu extends Phaser.Scene {
     this.anims.create({
       key: "beam_animation",
       frames: this.anims.generateFrameNumbers("beam"),
+      frameRate: 20,
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: "beam2_animation",
+      frames: this.anims.generateFrameNumbers("beam2"),
       frameRate: 20,
       repeat: -1
     })
