@@ -10,7 +10,23 @@ class Game extends Phaser.Scene {
     super("game");
   }
 
+  init(data) {
+    this.gold = data.gold;
+    this.maxHp = data.hp;
+    this.beamLevel = data.beamLevel;
+  }
+
   create() {
+
+    // Game statistics
+    this.hp = this.maxHp;
+    this.score = 0;
+    this.timer = 0;
+    this.maxWaves = 15;
+    this.currWave = 1;
+    this.currEnemies = 0;
+    this.numEnemies = 0;
+    this.powerupTypes = ["healthUp", "scoreUp", "powerUp"];
 
     this.beamSound = this.sound.add("beam_sound", {volume: 0.3});
     this.explodeSound = this.sound.add("explode_sound", { volume: 0.5 });
@@ -46,17 +62,6 @@ class Game extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
     this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
 
-    // Game statistics
-    this.score = 0;
-    this.hp = 100;
-    this.timer = 0;
-    this.beamLevel = 1;
-    this.maxWaves = 15;
-    this.currWave = 1;
-    this.currEnemies = 0;
-    this.numEnemies = 0;
-    this.powerupTypes = ["healthUp", "scoreUp", "powerUp"];
-
     // Add HUD background
     let graphics = this.add.graphics();
     graphics.fillStyle("0x000000", 1);
@@ -79,7 +84,12 @@ class Game extends Phaser.Scene {
 
     if (this.hp <= 0){
       this.music.pause();
-      this.scene.start('gameover', {score: this.score});
+      this.scene.start('gameover', {
+        score: this.score,
+        gold: this.gold,
+        hp: this.maxHp,
+        beamLevel: this.beamLevel
+      });
     }
 
     if (this.enemies.getChildren().length === 0){
@@ -251,7 +261,7 @@ class Game extends Phaser.Scene {
         this.addScore(1000);
         break;
       case "powerUp":
-        this.beamLevel ++;
+        this.beamLevel++;
         break;
     }
     powerup.destroy();

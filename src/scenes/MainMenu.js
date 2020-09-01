@@ -12,11 +12,16 @@ import beamSound from "../assets/sound/beam.mp3";
 import selectSound from "../assets/sound/select.wav";
 import menuMusic from "../assets/sound/I miss you.mp3";
 import music from "../assets/sound/Lachrymose.mp3";
+import shopMusic from "../assets/sound/lost souls.mp3";
 import explodeSound from "../assets/sound/explosion.mp3";
 import pickupSound from "../assets/sound/pickup.mp3";
+import upgradeSound from "../assets/sound/upgrade.mp3";
+import errorSound from "../assets/sound/error.mp3";
 import healthUp from "../assets/images/health.png";
 import scoreUp from "../assets/images/score.png";
 import powerUp from "../assets/images/powerup.png";
+import border from "../assets/images/border.png";
+import shopBackground from "../assets/images/shop.jpg";
 import mainBackground from "../assets/images/background.jpg";
 
 class MainMenu extends Phaser.Scene {
@@ -26,10 +31,16 @@ class MainMenu extends Phaser.Scene {
 
   preload() {
     this.load.image("background", background);
+    this.load.image("shopBackground", shopBackground);
     this.load.image("mainBackground", mainBackground);
     this.load.image("healthUp", healthUp);
     this.load.image("scoreUp", scoreUp);
     this.load.image("powerUp", powerUp);
+
+    this.load.spritesheet("border", border, {
+      frameWidth: 286,
+      frameHeight: 88
+    });
 
     this.load.spritesheet("character", character, {
       frameWidth: 22,
@@ -69,6 +80,9 @@ class MainMenu extends Phaser.Scene {
     this.load.audio("select_sound", selectSound);
     this.load.audio("menuMusic", menuMusic);
     this.load.audio("music", music);
+    this.load.audio("shopMusic", shopMusic);
+    this.load.audio("upgrade", upgradeSound);
+    this.load.audio("error", errorSound);
   }
 
   create() {
@@ -126,7 +140,11 @@ class MainMenu extends Phaser.Scene {
     if (this.cursors.space.isDown) {
       this.selectSound.play();
       this.menuMusic.pause();
-      this.scene.start('game');
+
+      this.scene.start('shop', {
+        gold : 5000,
+        hp : 100,
+        beamLevel : 1});
     }
   }
 }

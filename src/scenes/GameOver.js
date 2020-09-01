@@ -10,6 +10,9 @@ class GameOver extends Phaser.Scene {
 
   init(data){
     this.score = data.score;
+    this.gold = data.gold;
+    this.hp = data.hp;
+    this.beamLevel = data.beamLevel;
   }
 
   create() {
@@ -19,16 +22,24 @@ class GameOver extends Phaser.Scene {
     graphics.fillStyle(0x000000, 1);
     graphics.fillRect(0, 0, 800, 600);
 
+    let gold = Math.floor(this.score / 10);
+    this.gold += gold;
+
     this.add.text(325, 300, "Game Over");
     this.add.text(325, 315, `You score is ${this.score}`);
-    this.add.text(325, 330, "Press space to restart.");
+    this.add.text(325, 330, `You have been awarded ${gold} gold!`);
+    this.add.text(325, 345, "Press space to continue.");
 
   }
 
   update() {
 
     if (cursors.space.isDown) {
-      this.scene.start('mainmenu');
+      this.scene.start('shop', {
+        gold: this.gold,
+        hp: this.hp,
+        beamLevel: this.beamLevel
+      });
     }
   }
 };
