@@ -19,7 +19,7 @@ class Bat extends Phaser.GameObjects.Sprite {
 
     scene.enemies.add(this);
 
-    this.slash = scene.sound.add("slash", { volume: 2 });
+    // this.slash = scene.sound.add("slash", { volume: 2 });
     this.fire = Math.random(100, 800) * 1000;
     this.isFired = false;
     this.hp = 3;
@@ -31,7 +31,7 @@ class Bat extends Phaser.GameObjects.Sprite {
     }
 
     if (this.x < this.fire && !this.isFired){
-      this.slash.play();
+      // this.slash.play();
       new WindSlash(this.scene, this.x - 20, this.y);
       this.isFired = true;  
     }

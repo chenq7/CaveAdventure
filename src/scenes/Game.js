@@ -4,7 +4,6 @@ import Bat from "./Bat.js";
 import Explosion from "./Explosion.js";
 import PowerUp from "./PowerUp.js";
 import Dragon from "./Dragon.js";
-import WindSlash from "./WindSlash";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -85,13 +84,7 @@ class Game extends Phaser.Scene {
 
   update() {
     if (this.hp <= 0){
-      this.music.pause();
-      this.scene.start('gameover', {
-        score: this.score,
-        gold: this.gold,
-        hp: this.maxHp,
-        beamLevel: this.beamLevel
-      });
+      this.endWave();
     }
 
     if (this.enemies.getChildren().length === 0){
@@ -116,8 +109,7 @@ class Game extends Phaser.Scene {
         }
       }
       else {
-        this.music.pause();
-        this.scene.start("winscreen", { score: this.score });
+        this.endWave();
       }
     }
 
@@ -177,6 +169,16 @@ class Game extends Phaser.Scene {
     }
   }
 
+  endWave() {
+    this.music.pause();
+    this.scene.start('gameover', {
+      score: this.score,
+      gold: this.gold,
+      hp: this.maxHp,
+      beamLevel: this.beamLevel
+    });
+  }
+
   shootBeam() {
     this.beamSound.play();
     if (this.beamLevel === 1){
@@ -185,18 +187,33 @@ class Game extends Phaser.Scene {
       new Beam(this, this.player.x + 16, this.player.y - 5, "beam", "right");
       new Beam(this, this.player.x + 16, this.player.y + 5, "beam", "right");
     } else if (this.beamLevel === 3) {
-      new Beam(this, this.player.x + 16, this.player.y, "beam", "right");
       new Beam(this, this.player.x + 16, this.player.y, "beam", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "right");
       new Beam(this, this.player.x + 16, this.player.y, "beam", "bottomRight");
     } else if (this.beamLevel === 4) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "topRight");
       new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam", "bottomRight");
     } else if (this.beamLevel === 5) {
-      new Beam(this, this.player.x + 16, this.player.y -12, "beam2", "right");
-      new Beam(this, this.player.x + 16, this.player.y + 12, "beam2", "right");
-    } else if (this.beamLevel >= 6) {
-      new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
       new Beam(this, this.player.x + 16, this.player.y, "beam2", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "right");
       new Beam(this, this.player.x + 16, this.player.y, "beam2", "bottomRight");
+    } else if (this.beamLevel === 6) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam3", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam2", "bottomRight");
+    } else if (this.beamLevel === 7) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam3", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam3", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam3", "bottomRight");
+    } else if (this.beamLevel === 8) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam3", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam4", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam3", "bottomRight");
+    } else if (this.beamLevel >= 9) {
+      new Beam(this, this.player.x + 16, this.player.y, "beam4", "right");
+      new Beam(this, this.player.x + 16, this.player.y, "beam4", "topRight");
+      new Beam(this, this.player.x + 16, this.player.y, "beam4", "bottomRight");
     }
   }
 
@@ -224,7 +241,7 @@ class Game extends Phaser.Scene {
 
   hitEnemy(projectile, enemy){
     
-    enemy.hp -= this.beamLevel > 3 ? 2 : 1;
+    enemy.hp -= projectile.dmg;
     projectile.destroy();
 
     if (enemy.hp <= 0){

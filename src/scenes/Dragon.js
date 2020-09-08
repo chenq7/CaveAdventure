@@ -17,7 +17,7 @@ class Dragon extends Phaser.GameObjects.Sprite {
 
     scene.enemies.add(this);
 
-    this.hp = 10;
+    this.hp = 20;
   }
 
   update() {

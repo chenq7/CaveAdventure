@@ -12,12 +12,23 @@ class Beam extends Phaser.GameObjects.Sprite {
 
     scene.add.existing(this);
 
+    this.dmg = 1;
+
     if (beamType === "beam"){
       this.setScale(1.5);
       this.play("beam_animation");
-    } else {
-      this.setScale(2);
+    } else if (beamType === "beam2") {
+      this.setScale(1.5);
       this.play("beam2_animation");
+      this.dmg = 3;
+    } else if (beamType === "beam3") {
+      this.setScale(2);
+      this.play("beam3_animation");
+      this.dmg = 5;
+    } else if (beamType === "beam4") {
+      this.setScale(2);
+      this.play("beam4_animation");
+      this.dmg = 10;
     }
 
     scene.physics.world.enableBody(this);
