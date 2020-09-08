@@ -3,6 +3,7 @@ import MainMenu from "./scenes/MainMenu";
 import Game from "./scenes/Game";
 import WinScreen from "./scenes/WinScreen";
 import GameOver from "./scenes/GameOver";
+import Wave from "./scenes/Wave";
 import Shop from "./scenes/Shop";
 import "./styles/reset.css";
 import "./styles/index.css";
@@ -17,7 +18,7 @@ var config = {
       gravity: { y: 0, x: 0 },
     },
   },
-  scene: [MainMenu, Shop, Game, WinScreen, GameOver]
+  scene: [MainMenu, Shop, Wave, Game, WinScreen, GameOver]
 };
 
 var game = new Phaser.Game(config);
