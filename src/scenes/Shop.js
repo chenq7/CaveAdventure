@@ -58,6 +58,7 @@ class Shop extends Phaser.Scene {
     this.bulletLabel = this.add.bitmapText(322, 200, "pixelFont", this.beamLevel, 25);
     this.hpLabel = this.add.bitmapText(620, 200, "pixelFont", this.hp, 25);
 
+    this.selectSound = this.sound.add("select_sound", { volume: 1 });
   }
 
   update() {
@@ -100,6 +101,7 @@ class Shop extends Phaser.Scene {
         this.errorSound.play();
       }
     } else if (gameObject.x === 425) {
+      this.selectSound.play();
       this.scene.start('wave', {
         gold: this.gold,
         hp: this.hp,

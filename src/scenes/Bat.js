@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import WindSlash from "./WindSlash";
 
 
 class Bat extends Phaser.GameObjects.Sprite {
@@ -18,13 +19,21 @@ class Bat extends Phaser.GameObjects.Sprite {
 
     scene.enemies.add(this);
 
-    this.hp = 2;
+    this.slash = scene.sound.add("slash", { volume: 2 });
+    this.fire = Math.random(100, 800) * 1000;
+    this.isFired = false;
+    this.hp = 3;
   }
 
   update() {
     if (this.x < 0) {
-      // this.scene.updateHp(-33);
       this.destroy();
+    }
+
+    if (this.x < this.fire && !this.isFired){
+      this.slash.play();
+      new WindSlash(this.scene, this.x - 20, this.y);
+      this.isFired = true;  
     }
   }
 

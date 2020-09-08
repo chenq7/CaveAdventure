@@ -22,12 +22,8 @@ class GameOver extends Phaser.Scene {
     graphics.fillStyle(0x000000, 1);
     graphics.fillRect(0, 0, 800, 600);
 
-    let gold = Math.floor(this.score / 10);
-    this.gold += gold;
-
     this.add.text(325, 300, "Game Over");
-    this.add.text(325, 315, `You score is ${this.score}`);
-    this.add.text(325, 330, `You have been awarded ${gold} gold!`);
+    this.add.text(325, 330, `You have been awarded ${this.score} gold!`);
     this.add.text(325, 345, "Press space to continue.");
 
   }
@@ -36,7 +32,7 @@ class GameOver extends Phaser.Scene {
 
     if (cursors.space.isDown) {
       this.scene.start('shop', {
-        gold: this.gold,
+        gold: this.gold + this.score,
         hp: this.hp,
         beamLevel: this.beamLevel
       });

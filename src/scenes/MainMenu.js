@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import background from "../assets/images/game_background.jpg";
 import character from "../assets/images/character.png";
+import windSlash from "../assets/images/windSlash.png";
 import bat from "../assets/sprites/bats.png";
 import dragon from "../assets/sprites/dragon.png";
 import beam from "../assets/sprites/beam.png";
@@ -16,6 +17,7 @@ import shopMusic from "../assets/sound/lost souls.mp3";
 import explodeSound from "../assets/sound/explosion.mp3";
 import pickupSound from "../assets/sound/pickup.mp3";
 import upgradeSound from "../assets/sound/upgrade.mp3";
+import slash from "../assets/sound/slash.mp3";
 import errorSound from "../assets/sound/error.mp3";
 import healthUp from "../assets/images/health.png";
 import scoreUp from "../assets/images/score.png";
@@ -39,6 +41,7 @@ class MainMenu extends Phaser.Scene {
     this.load.image("healthUp", healthUp);
     this.load.image("scoreUp", scoreUp);
     this.load.image("powerUp", powerUp);
+    this.load.image("windSlash", windSlash);
 
     this.load.spritesheet("border", border, {
       frameWidth: 286,
@@ -91,6 +94,7 @@ class MainMenu extends Phaser.Scene {
     this.load.audio("shopMusic", shopMusic);
     this.load.audio("upgrade", upgradeSound);
     this.load.audio("error", errorSound);
+    this.load.audio("slash", slash);
   }
 
   create() {
@@ -139,7 +143,7 @@ class MainMenu extends Phaser.Scene {
     this.add.text(275, 400, "Press spacebar to shoot.", { fontSize: '18px', color: 'yellow' });
     this.add.text(275, 430, "Press space to start.", { fontSize: '18px', color: 'yellow' });
 
-    this.selectSound = this.sound.add("select_sound", { volume: 2 });
+    this.selectSound = this.sound.add("select_sound", { volume: 1 });
     this.menuMusic = this.sound.add("menuMusic", { volume: 0.3 });
     this.menuMusic.play();
   }

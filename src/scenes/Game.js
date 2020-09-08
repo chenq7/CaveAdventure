@@ -4,6 +4,7 @@ import Bat from "./Bat.js";
 import Explosion from "./Explosion.js";
 import PowerUp from "./PowerUp.js";
 import Dragon from "./Dragon.js";
+import WindSlash from "./WindSlash";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -14,10 +15,10 @@ class Game extends Phaser.Scene {
     this.gold = data.gold;
     this.maxHp = data.hp;
     this.beamLevel = data.beamLevel;
+    this.level = data.level
   }
 
   create() {
-
     // Game statistics
     this.hp = this.maxHp;
     this.score = 0;
@@ -57,10 +58,12 @@ class Game extends Phaser.Scene {
     this.enemies = this.add.group();
     this.projectiles = this.add.group();
     this.powerups = this.add.group();
+    this.enemyProjectiles = this.add.group();
 
     this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
     this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
+    this.physics.add.overlap(this.player, this.enemyProjectiles, this.hurtPlayer, null, this);
 
     // Add HUD background
     let graphics = this.add.graphics();
@@ -81,7 +84,6 @@ class Game extends Phaser.Scene {
   }
 
   update() {
-
     if (this.hp <= 0){
       this.music.pause();
       this.scene.start('gameover', {
@@ -96,8 +98,8 @@ class Game extends Phaser.Scene {
       if (this.currWave < this.maxWaves){
         this.currWave++;
         this.waveLabel.text = "WAVE " + this.currWave;
-        this.numEnemies += this.currWave > 3 ? 2 : 4;
-        if (this.currWave == 3) this.numEnemies = 2;
+        this.numEnemies += this.currWave > 7 ? 2 : 5;
+        if (this.currWave == 7) this.numEnemies = 2;
         let currY = 80;
         let currX = 800;
         for (let i = 0; i < this.numEnemies; i++){
@@ -105,7 +107,7 @@ class Game extends Phaser.Scene {
             currY = currY == 680 ? 115 : 80;
             currX = currX + 100;
           }
-          if (this.currWave > 2){
+          if (this.currWave >= 7){
             this.generateDragon(currX, currY);
           } else {
             this.generateBat(currX, currY);
@@ -128,18 +130,19 @@ class Game extends Phaser.Scene {
     }
 
     for (let i = 0; i < this.projectiles.getChildren().length; i++){
-      let beam = this.projectiles.getChildren()[i];
-      beam.update();
+      this.projectiles.getChildren()[i].update();
     }
  
     for (let i = 0; i < this.enemies.getChildren().length; i++) {
-      let enemy = this.enemies.getChildren()[i];
-      enemy.update();
+      this.enemies.getChildren()[i].update();
     }
 
     for (let i = 0; i < this.powerups.getChildren().length; i++) {
-      let powerup = this.powerups.getChildren()[i];
-      powerup.update();
+      this.powerups.getChildren()[i].update();
+    }
+
+    for (let i = 0; i < this.enemyProjectiles.getChildren().length; i++) {
+      this.enemyProjectiles.getChildren()[i].update();
     }
 
     if (this.timer % 200 === 0){
@@ -203,7 +206,7 @@ class Game extends Phaser.Scene {
     this.updateHp(-57);
     enemy.destroy();
     new Explosion(this, enemy.x, enemy.y);
-    this.addScore(175); 
+    this.addScore(17); 
 
     this.immune();
   }
@@ -228,7 +231,7 @@ class Game extends Phaser.Scene {
       new Explosion(this, enemy.x, enemy.y);
       this.explodeSound.play();
       enemy.destroy();
-      this.addScore(175); 
+      this.addScore(17); 
     }
   }
 
@@ -258,7 +261,7 @@ class Game extends Phaser.Scene {
         this.updateHp(50);
         break;
       case "scoreUp":
-        this.addScore(1000);
+        this.addScore(100);
         break;
       case "powerUp":
         this.beamLevel++;

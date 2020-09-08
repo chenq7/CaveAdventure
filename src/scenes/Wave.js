@@ -50,6 +50,8 @@ class Wave extends Phaser.Scene {
     this.startBorder.setInteractive();
     this.add.text(350, 490, "Back to Shop", { fontSize: "28px" });
     this.input.on('gameobjectdown', this.selectWave, this);
+
+    this.selectSound = this.sound.add("select_sound", { volume: 1 });
   }
 
   // 4.1 zero pad format function
@@ -65,30 +67,31 @@ class Wave extends Phaser.Scene {
   }
 
   selectWave(pointer, gameObject) {
-    if (gameObject.x === 273) {
-      this.music.pause();
-      this.scene.start('game', {
-        gold: this.gold,
-        hp: this.hp,
-        beamLevel: this.beamLevel,
-        wave: 1 
-      });
-    } else if (gameObject.x === 623) {
-      this.music.pause();
-      this.scene.start('game', {
-        gold: this.gold,
-        hp: this.hp,
-        beamLevel: this.beamLevel,
-        wave: 2
-      });
-    } else if (gameObject.x === 425) {
+    this.selectSound.play();
+
+    if (gameObject.x === 425) {
       this.scene.start('shop', {
         gold: this.gold,
         hp: this.hp,
         beamLevel: this.beamLevel,
         music: this.music
       });
-    }   
+    } else {
+      let selected = 0;
+      if (gameObject.x === 273) {
+        selected = gameObject.y === 220 ? 1 : 3;
+      } else {
+        selected = gameObject.y === 220 ? 2 : 4;
+      }
+
+      this.music.pause();
+      this.scene.start('game', {
+        gold: this.gold,
+        hp: this.hp,
+        beamLevel: this.beamLevel,
+        level: selected
+      });
+    } 
   }
 };
 
