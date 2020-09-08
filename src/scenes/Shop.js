@@ -11,12 +11,17 @@ class Shop extends Phaser.Scene {
     this.gold = data.gold;
     this.hp = data.hp;
     this.beamLevel = data.beamLevel;
+    if (data.music){
+      this.music = data.music;
+    } else {
+      this.music = this.sound.add("shopMusic", { volume: 0.3 });
+      this.music.play();
+    }
   }
 
   create() {
 
     this.add.image(450, 300, "shopBackground");
-    this.shopMusic = this.sound.add("shopMusic", { volume: 0.3 });
 
     cursors = this.input.keyboard.createCursorKeys();
     this.errorSound = this.sound.add("error", { volume: 0.5 });
@@ -25,8 +30,7 @@ class Shop extends Phaser.Scene {
     let goldFormated = this.zeroPad(this.gold, 6);
     this.goldLabel = this.add.bitmapText(770, 27.5, "pixelFont", goldFormated, 25);
     this.add.image(860, 35, "scoreUp");
-    this.add.text(415, 30, "SHOP", { fontFamily: 'Courier', fontSize: '30px'});
-    this.add.text(270, 490, "Press space to start", { fontSize: "28px"});
+    this.add.text(415, 20, "SHOP", { fontFamily: 'Courier', fontSize: '30px'});
     
     this.maxHpLabel = this.add.bitmapText(45, 27.5, "pixelFont", "HP " + this.hp, 25);
     
@@ -46,23 +50,18 @@ class Shop extends Phaser.Scene {
     this.hpPriceLabel = this.add.bitmapText(535, 225, "pixelFont", "Upgrade for " + hpFormated, 25);
     this.add.image(720, 233, "scoreUp");
 
+    this.startBorder = this.add.sprite(425, 505, "startBorder");
+    this.startBorder.setInteractive();
+    this.add.text(270, 490, "Click here to start", { fontSize: "28px" });
+
     this.input.on('gameobjectdown', this.buyUpgrade, this);
     this.bulletLabel = this.add.bitmapText(322, 200, "pixelFont", this.beamLevel, 25);
     this.hpLabel = this.add.bitmapText(620, 200, "pixelFont", this.hp, 25);
 
-    this.shopMusic.play();
   }
 
   update() {
 
-    if (cursors.space.isDown) {
-      this.shopMusic.pause();
-      this.scene.start('game', {
-        gold: this.gold,
-        hp: this.hp,
-        beamLevel: this.beamLevel
-      });
-    }
   }
 
   // 4.1 zero pad format function
@@ -75,7 +74,6 @@ class Shop extends Phaser.Scene {
   }
 
   buyUpgrade(pointer, gameObject){
-
     if (gameObject.x === 273){
       if (this.gold > this.bulletPrice){
         this.gold -= this.bulletPrice;
@@ -101,7 +99,14 @@ class Shop extends Phaser.Scene {
       } else {
         this.errorSound.play();
       }
-    }    
+    } else if (gameObject.x === 425) {
+      this.scene.start('wave', {
+        gold: this.gold,
+        hp: this.hp,
+        beamLevel: this.beamLevel,
+        music: this.music
+      });
+    }   
   }
 };
 

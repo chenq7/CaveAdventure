@@ -21,8 +21,10 @@ import healthUp from "../assets/images/health.png";
 import scoreUp from "../assets/images/score.png";
 import powerUp from "../assets/images/powerup.png";
 import border from "../assets/images/border.png";
+import startBorder from "../assets/images/startBorder.png";
 import shopBackground from "../assets/images/shop.jpg";
 import mainBackground from "../assets/images/background.jpg";
+import waveBackground from "../assets/images/wave.jpg";
 
 class MainMenu extends Phaser.Scene {
   constructor() {
@@ -32,6 +34,7 @@ class MainMenu extends Phaser.Scene {
   preload() {
     this.load.image("background", background);
     this.load.image("shopBackground", shopBackground);
+    this.load.image("waveBackground", waveBackground);
     this.load.image("mainBackground", mainBackground);
     this.load.image("healthUp", healthUp);
     this.load.image("scoreUp", scoreUp);
@@ -40,6 +43,11 @@ class MainMenu extends Phaser.Scene {
     this.load.spritesheet("border", border, {
       frameWidth: 286,
       frameHeight: 88
+    });
+
+    this.load.spritesheet("startBorder", startBorder, {
+      frameWidth: 350,
+      frameHeight: 70
     });
 
     this.load.spritesheet("character", character, {
