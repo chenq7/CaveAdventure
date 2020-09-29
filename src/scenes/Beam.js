@@ -29,6 +29,9 @@ class Beam extends Phaser.GameObjects.Sprite {
       this.setScale(2);
       this.play("beam4_animation");
       this.dmg = 10;
+    } else if (beamType === "iceShard") {
+      this.setScale(0.2);
+      this.dmg = 10;
     }
 
     scene.physics.world.enableBody(this);

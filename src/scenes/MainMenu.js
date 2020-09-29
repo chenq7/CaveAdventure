@@ -1,7 +1,9 @@
 import Phaser from "phaser";
 import background from "../assets/images/game_background.jpg";
 import character from "../assets/images/character.png";
+import pet from "../assets/images/pet.png";
 import windSlash from "../assets/images/windSlash.png";
+import iceShard from "../assets/images/iceshard.png";
 import bat from "../assets/sprites/bats.png";
 import dragon from "../assets/sprites/dragon.png";
 import beam from "../assets/sprites/beam.png";
@@ -44,6 +46,7 @@ class MainMenu extends Phaser.Scene {
     this.load.image("scoreUp", scoreUp);
     this.load.image("powerUp", powerUp);
     this.load.image("windSlash", windSlash);
+    this.load.image("iceShard", iceShard);
 
     this.load.spritesheet("border", border, {
       frameWidth: 286,
@@ -59,6 +62,11 @@ class MainMenu extends Phaser.Scene {
       frameWidth: 22,
       frameHeight: 31
     });
+
+    this.load.spritesheet("pet", pet, {
+      frameWidth: 34,
+      frameHeight: 40
+    }); 
 
     this.load.spritesheet("bat", bat, {
       frameWidth: 27,
@@ -170,7 +178,7 @@ class MainMenu extends Phaser.Scene {
     this.add.text(275, 430, "Press space to start.", { fontSize: '18px', color: 'yellow' });
 
     this.selectSound = this.sound.add("select_sound", { volume: 1 });
-    this.menuMusic = this.sound.add("menuMusic", { volume: 0.3 });
+    this.menuMusic = this.sound.add("menuMusic", { volume: 0.15 });
     this.menuMusic.play();
   }
 
@@ -180,9 +188,12 @@ class MainMenu extends Phaser.Scene {
       this.menuMusic.pause();
 
       this.scene.start('shop', {
-        gold : 5000,
-        hp : 100,
-        beamLevel : 1});
+        gold: 5000,
+        hp: 100,
+        beamLevel: 1,
+        petLevel: 1,
+        regenLevel: 1
+      });
     }
   }
 }

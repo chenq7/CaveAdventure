@@ -11,6 +11,8 @@ class Wave extends Phaser.Scene {
     this.gold = data.gold;
     this.hp = data.hp;
     this.beamLevel = data.beamLevel;
+    this.petLevel = data.petLevel;
+    this.regenLevel = data.regenLevel;
     this.music = data.music;
   }
 
@@ -28,22 +30,22 @@ class Wave extends Phaser.Scene {
     this.wave1Border = this.add.sprite(273, 220, "border");
     this.wave1Border.setInteractive();
     this.add.text(185, 200, "Cave of Beasts");
-    this.wave1Label = this.add.bitmapText(185, 225, "pixelFont", "Difficulty: 1", 25);
+    this.add.bitmapText(185, 225, "pixelFont", "Difficulty: 1", 25);
 
     this.wave2Border = this.add.sprite(623, 220, "border");
     this.wave2Border.setInteractive();
     this.add.text(535, 200, "Cave of Mystery");
-    this.hpPriceLabel = this.add.bitmapText(535, 225, "pixelFont", "Difficult: 3", 25);
+    this.add.bitmapText(535, 225, "pixelFont", "Difficult: 3", 25);
 
     this.wave3Border = this.add.sprite(273, 370, "border");
     this.wave3Border.setInteractive();
     this.add.text(185, 350, "Cave of Sorrow");
-    this.hpPriceLabel = this.add.bitmapText(185, 375, "pixelFont", "Difficult: 6", 25);
+    this.add.bitmapText(185, 375, "pixelFont", "Difficult: 6", 25);
 
     this.wave4Border = this.add.sprite(623, 370, "border");
     this.wave4Border.setInteractive();
     this.add.text(535, 350, "Cave of Horror");
-    this.hpPriceLabel = this.add.bitmapText(535, 375, "pixelFont", "Difficult: 10", 25);
+    this.add.bitmapText(535, 375, "pixelFont", "Difficult: 10", 25);
 
 
     this.startBorder = this.add.sprite(425, 505, "startBorder");
@@ -74,6 +76,8 @@ class Wave extends Phaser.Scene {
         gold: this.gold,
         hp: this.hp,
         beamLevel: this.beamLevel,
+        petLevel: this.petLevel,
+        regenLevel: this.regenLevel,
         music: this.music
       });
     } else {
@@ -89,6 +93,8 @@ class Wave extends Phaser.Scene {
         gold: this.gold,
         hp: this.hp,
         beamLevel: this.beamLevel,
+        petLevel: this.petLevel,
+        regenLevel: this.regenLevel,
         level: selected
       });
     } 

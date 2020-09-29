@@ -14,6 +14,8 @@ class Game extends Phaser.Scene {
     this.gold = data.gold;
     this.maxHp = data.hp;
     this.beamLevel = data.beamLevel;
+    this.petLevel = data.petLevel;
+    this.regenLevel = data.regenLevel;
     this.level = data.level
   }
 
@@ -23,18 +25,18 @@ class Game extends Phaser.Scene {
     this.score = 0;
     this.timer = 0;
     this.maxWaves = 15;
-    this.currWave = 1;
+    this.currWave = 0;
     this.currEnemies = 0;
     this.numEnemies = 0;
-    this.powerupTypes = ["healthUp", "scoreUp", "powerUp"];
+    this.powerupTypes = ["healthUp", "scoreUp"]; //powerUp
 
-    this.beamSound = this.sound.add("beam_sound", {volume: 0.3});
-    this.explodeSound = this.sound.add("explode_sound", { volume: 0.5 });
-    this.pickupSound = this.sound.add("pickup_sound", {volume: 0.5});
+    this.beamSound = this.sound.add("beam_sound", {volume: 0.12});
+    this.explodeSound = this.sound.add("explode_sound", { volume: 0.15 });
+    this.pickupSound = this.sound.add("pickup_sound", {volume: 0.2});
     this.music = this.sound.add("music");
     let musicSettings = {
       mute: false,
-      volume: 0.7,
+      volume: 0.3,
       rate: 1,
       detune: 0,
       seek: 0,
@@ -50,8 +52,13 @@ class Game extends Phaser.Scene {
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     this.player = this.physics.add.sprite(200, 300, "character");
+    this.prevPlayerX = 200;
+    this.prevPlayerY = 300;
+    this.pet = this.physics.add.sprite(170, 300, "pet");
     this.player.setScale(1.5);
+    this.pet.setScale(0.55);
     this.player.setCollideWorldBounds(true);
+    this.pet.setCollideWorldBounds(true);
     this.moveSpd = 300;
 
     this.enemies = this.add.group();
@@ -63,7 +70,7 @@ class Game extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
     this.physics.add.overlap(this.player, this.powerups, this.collectPowerup, null, this);
     this.physics.add.overlap(this.player, this.enemyProjectiles, this.hurtPlayer, null, this);
-
+    this.physics.add.overlap(this.player, this.pet, this.handlePetCollision, null, this);
     // Add HUD background
     let graphics = this.add.graphics();
     graphics.fillStyle("0x000000", 1);
@@ -76,21 +83,22 @@ class Game extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    let scoreFormated = this.zeroPad(this.score, 6);
-    this.scoreLabel = this.add.bitmapText(750, 7.5, "pixelFont", "SCORE " + scoreFormated, 25);
-    this.hpLabel = this.add.bitmapText(30, 7.5, "pixelFont", "HP " + this.hp, 25);
+    let scoreFormated = this.zeroPad(this.gold, 6);
+    this.scoreLabel = this.add.bitmapText(750, 7.5, "pixelFont", scoreFormated, 25);
+    this.hpLabel = this.add.bitmapText(30, 7.5, "pixelFont", "HP " + this.hp + " / " + this.maxHp, 25);
     this.waveLabel = this.add.bitmapText(380, 7.5, "pixelFont", "WAVE " + this.currWave, 25);
+    this.add.image(835, 15, "scoreUp");
   }
 
   update() {
     if (this.hp <= 0){
-      this.endWave();
+      this.endWave("You have been slain...");
     }
 
     if (this.enemies.getChildren().length === 0){
       if (this.currWave < this.maxWaves){
         this.currWave++;
-        this.waveLabel.text = "WAVE " + this.currWave;
+        this.waveLabel.text = "Wave " + this.currWave + " / " + this.maxWaves;
         this.numEnemies += this.currWave > 7 ? 2 : 5;
         if (this.currWave == 7) this.numEnemies = 2;
         let currY = 80;
@@ -109,7 +117,7 @@ class Game extends Phaser.Scene {
         }
       }
       else {
-        this.endWave();
+        this.endWave("Dungeon cleared! :)");
       }
     }
 
@@ -137,9 +145,20 @@ class Game extends Phaser.Scene {
       this.enemyProjectiles.getChildren()[i].update();
     }
 
-    if (this.timer % 200 === 0){
+    // power up drops
+    if (this.timer % 500 === 0){
       let type = this.powerupTypes[Math.floor(Math.random() * 3)];
       new PowerUp(this, type);
+    }
+
+    // hp regen
+    if (this.timer % 200 === 0){
+      this.updateHp(this.regenLevel);
+    }
+
+    // pet fire rate
+    if (this.timer % Math.floor(100 / this.petLevel) === 0){
+      new Beam(this, this.pet.x + 16, this.pet.y, "iceShard", "right");
     }
     this.timer += 1;
 
@@ -156,26 +175,41 @@ class Game extends Phaser.Scene {
 
   movePlayer() {
     this.player.setDrag(1000);
+    this.pet.setDrag(1000);
     if (this.cursorKeys.left.isDown){
       this.player.setVelocityX(-this.moveSpd);
+      this.pet.setVelocityX(-this.moveSpd);
     } else if (this.cursorKeys.right.isDown){
       this.player.setVelocityX(this.moveSpd);
+      this.pet.setVelocityX(this.moveSpd);
     } 
     
     if (this.cursorKeys.up.isDown) {
       this.player.setVelocityY(-this.moveSpd);
+      this.pet.setVelocityY(-this.moveSpd);
     } else if (this.cursorKeys.down.isDown) {
       this.player.setVelocityY(this.moveSpd);
+      this.pet.setVelocityY(this.moveSpd);
     }
+    this.prevPlayerX = this.player.x;
+    this.prevPlayerY = this.player.y;
   }
 
-  endWave() {
+  handlePetCollision() {
+    this.player.x = this.prevPlayerX;
+    this.player.y = this.prevPlayerY;
+  }
+
+  endWave(text) {
     this.music.pause();
     this.scene.start('gameover', {
+      text: text,
       score: this.score,
       gold: this.gold,
       hp: this.maxHp,
-      beamLevel: this.beamLevel
+      beamLevel: this.beamLevel,
+      petLevel: this.petLevel,
+      regenLevel: this.regenLevel
     });
   }
 
@@ -223,7 +257,7 @@ class Game extends Phaser.Scene {
     this.updateHp(-57);
     enemy.destroy();
     new Explosion(this, enemy.x, enemy.y);
-    this.addScore(17); 
+    this.addScore(23); 
 
     this.immune();
   }
@@ -248,7 +282,7 @@ class Game extends Phaser.Scene {
       new Explosion(this, enemy.x, enemy.y);
       this.explodeSound.play();
       enemy.destroy();
-      this.addScore(17); 
+      this.addScore(23); 
     }
   }
 
@@ -261,14 +295,18 @@ class Game extends Phaser.Scene {
   }
 
   updateHp(num){
-    this.hp += num;
-    this.hpLabel.text = "HP " + this.hp;
+    if (this.hp + num > this.maxHp){
+      this.hp = this.maxHp;
+    } else {
+      this.hp += num;
+    }
+    this.hpLabel.text = "HP " + this.hp + " / " + this.maxHp;
   }
 
   addScore(num){
     this.score += num;
-    let scoreFormated = this.zeroPad(this.score, 6);
-    this.scoreLabel.text = "SCORE " + scoreFormated;  
+    let scoreFormated = this.zeroPad(this.gold + this.score, 6);
+    this.scoreLabel.text = scoreFormated;  
   }
 
   collectPowerup(player, powerup){
@@ -280,9 +318,9 @@ class Game extends Phaser.Scene {
       case "scoreUp":
         this.addScore(100);
         break;
-      case "powerUp":
-        this.beamLevel++;
-        break;
+      // case "powerUp":
+      //   this.beamLevel++;
+      //   break;
     }
     powerup.destroy();
     this.pickupSound.play();
