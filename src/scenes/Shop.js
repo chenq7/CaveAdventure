@@ -94,7 +94,7 @@ class Shop extends Phaser.Scene {
 
   buyUpgrade(pointer, gameObject){
     if (gameObject.x === 273 && gameObject.y === 220){
-      if (this.gold > this.bulletPrice){
+      if (this.gold >= this.bulletPrice){
         this.gold -= this.bulletPrice;
         this.bulletPrice += 1000;
         this.beamLevel += 1;
@@ -106,7 +106,7 @@ class Shop extends Phaser.Scene {
         this.errorSound.play();
       }
     } else if (gameObject.x === 623 && gameObject.y === 220) {
-      if (this.gold > this.hpPrice) {
+      if (this.gold >= this.hpPrice) {
         this.gold -= this.hpPrice;
         this.hpPrice += 1000;
         this.hp += 100;
@@ -119,7 +119,7 @@ class Shop extends Phaser.Scene {
         this.errorSound.play();
       }
     } else if (gameObject.x === 273 && gameObject.y === 370) {
-      if (this.gold > this.petPrice){
+      if (this.gold >= this.petPrice){
         this.gold -= this.petPrice;
         this.petPrice += 1000;
         this.petLevel += 1;
@@ -131,7 +131,7 @@ class Shop extends Phaser.Scene {
         this.errorSound.play();
       }
     } else if (gameObject.x === 623 && gameObject.y === 370) {
-      if (this.gold > this.regenPrice) {
+      if (this.gold >= this.regenPrice) {
         this.gold -= this.regenPrice;
         this.regenPrice += 500;
         this.regenLevel += 1;
