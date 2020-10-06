@@ -23,6 +23,8 @@ class Bat extends Phaser.GameObjects.Sprite {
     this.fire = Math.random(100, 800) * 1000;
     this.isFired = false;
     this.hp = 3;
+    this.damage = -47;
+    this.value = 19;
   }
 
   update() {

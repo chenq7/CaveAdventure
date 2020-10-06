@@ -1,20 +1,20 @@
 import Phaser from "phaser";
 
-class WindSlash extends Phaser.GameObjects.Sprite {
+class FireBlast extends Phaser.GameObjects.Sprite {
   constructor(scene, xCoord, yCoord) {
 
     let x = xCoord;
     let y = yCoord;
 
-    super(scene, x, y, "windSlash");
-
+    super(scene, x, y, "fireBlast");
+    this.setScale(0.15);
     scene.add.existing(this);
 
     scene.physics.world.enableBody(this);
     scene.enemyProjectiles.add(this);
 
+    this.damage = -71;
     this.body.velocity.x = -250;
-    this.damage = -47;
   }
 
   update() {
@@ -24,4 +24,4 @@ class WindSlash extends Phaser.GameObjects.Sprite {
   }
 }
 
-export default WindSlash;
+export default FireBlast;

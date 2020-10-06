@@ -1,8 +1,9 @@
 import Phaser from "phaser";
-import background from "../assets/images/game_background.jpg";
+import cave1 from "../assets/images/cave1.jpg";
 import character from "../assets/images/character.png";
 import pet from "../assets/images/pet.png";
 import windSlash from "../assets/images/windSlash.png";
+import fireBlast from "../assets/images/fireBlast.png";
 import iceShard from "../assets/images/iceshard.png";
 import bat from "../assets/sprites/bats.png";
 import dragon from "../assets/sprites/dragon.png";
@@ -38,7 +39,7 @@ class MainMenu extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("background", background);
+    this.load.image("cave1", cave1);
     this.load.image("shopBackground", shopBackground);
     this.load.image("waveBackground", waveBackground);
     this.load.image("mainBackground", mainBackground);
@@ -47,6 +48,7 @@ class MainMenu extends Phaser.Scene {
     this.load.image("powerUp", powerUp);
     this.load.image("windSlash", windSlash);
     this.load.image("iceShard", iceShard);
+    this.load.image("fireBlast", fireBlast);
 
     this.load.spritesheet("border", border, {
       frameWidth: 286,

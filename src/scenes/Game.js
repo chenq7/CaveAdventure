@@ -24,7 +24,7 @@ class Game extends Phaser.Scene {
     this.hp = this.maxHp;
     this.score = 0;
     this.timer = 0;
-    this.maxWaves = 15;
+    this.maxWaves = 12;
     this.currWave = 0;
     this.currEnemies = 0;
     this.numEnemies = 0;
@@ -45,7 +45,7 @@ class Game extends Phaser.Scene {
     };
     this.music.play(musicSettings);
 
-    this.background = this.add.tileSprite(0, 0, 1728, 1080, "background");
+    this.background = this.add.tileSprite(0, 0, 1728, 1080, "cave1");
     this.background.setOrigin(0,0);
 
     this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -99,21 +99,21 @@ class Game extends Phaser.Scene {
       if (this.currWave < this.maxWaves){
         this.currWave++;
         this.waveLabel.text = "Wave " + this.currWave + " / " + this.maxWaves;
-        this.numEnemies += this.currWave > 7 ? 2 : 5;
-        if (this.currWave == 7) this.numEnemies = 2;
+        this.numEnemies += this.currWave > 3 ? 3 : 5;
+        if (this.currWave == 5) this.numEnemies = 3;
         let currY = 80;
         let currX = 800;
         for (let i = 0; i < this.numEnemies; i++){
-          if (currY > 580){
-            currY = currY == 680 ? 115 : 80;
-            currX = currX + 100;
-          }
-          if (this.currWave >= 7){
-            this.generateDragon(currX, currY);
-          } else {
-            this.generateBat(currX, currY);
-          }
-          currY += 150;
+            if (currY > 580) {
+              currY = currY == 680 ? 115 : 80;
+              currX += 100;
+            }
+            if (this.currWave > 4 && Math.floor(Math.random() * 2) === 0){
+              this.generateDragon(currX, currY);
+            } else {
+              this.generateBat(currX, currY);
+            }
+            currY += 150;
         }
       }
       else {
@@ -254,10 +254,9 @@ class Game extends Phaser.Scene {
   hurtPlayer(player, enemy){
     if (this.player.alpha < 1) return;
     this.explodeSound.play();
-    this.updateHp(-57);
+    this.updateHp(enemy.damage);
     enemy.destroy();
     new Explosion(this, enemy.x, enemy.y);
-    this.addScore(23); 
 
     this.immune();
   }
@@ -282,7 +281,7 @@ class Game extends Phaser.Scene {
       new Explosion(this, enemy.x, enemy.y);
       this.explodeSound.play();
       enemy.destroy();
-      this.addScore(23); 
+      this.addScore(enemy.value); 
     }
   }
 
@@ -305,8 +304,7 @@ class Game extends Phaser.Scene {
 
   addScore(num){
     this.score += num;
-    let scoreFormated = this.zeroPad(this.gold + this.score, 6);
-    this.scoreLabel.text = scoreFormated;  
+    this.scoreLabel.text = this.zeroPad(this.gold + this.score, 6);
   }
 
   collectPowerup(player, powerup){
@@ -318,13 +316,12 @@ class Game extends Phaser.Scene {
       case "scoreUp":
         this.addScore(100);
         break;
-      // case "powerUp":
-      //   this.beamLevel++;
-      //   break;
+
     }
     powerup.destroy();
     this.pickupSound.play();
   }
+
 };
 
 export default Game;
