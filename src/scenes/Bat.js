@@ -24,7 +24,7 @@ class Bat extends Phaser.GameObjects.Sprite {
     this.isFired = false;
     this.hp = 3;
     this.damage = -47;
-    this.value = 19;
+    this.value = 38;
   }
 
   update() {

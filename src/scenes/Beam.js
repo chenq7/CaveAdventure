@@ -30,18 +30,16 @@ class Beam extends Phaser.GameObjects.Sprite {
       this.play("beam4_animation");
       this.dmg = 10;
     } else if (beamType === "iceShard") {
-      this.setScale(0.2);
-      this.dmg = 10;
+      let petLevel = this.scene.petLevel;
+      this.setScale(0.17 + (0.03 * petLevel));
+      this.dmg = 10 + (2 * petLevel);
     }
 
     scene.physics.world.enableBody(this);
     scene.projectiles.add(this);
-
-    this.direction = direction;
-    this.beamType = beamType;
     
-    if (this.direction === "topRight") this.body.velocity.y = -200;
-    if (this.direction === "bottomRight") this.body.velocity.y = 200;
+    if (direction === "topRight") this.body.velocity.y = -200;
+    if (direction === "bottomRight") this.body.velocity.y = 200;
     this.body.velocity.x = 450;
   }
 

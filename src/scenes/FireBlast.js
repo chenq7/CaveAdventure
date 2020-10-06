@@ -13,7 +13,7 @@ class FireBlast extends Phaser.GameObjects.Sprite {
     scene.physics.world.enableBody(this);
     scene.enemyProjectiles.add(this);
 
-    this.damage = -71;
+    this.damage = -91;
     this.body.velocity.x = -250;
   }
 

@@ -4,6 +4,8 @@ import Bat from "./Bat.js";
 import Explosion from "./Explosion.js";
 import PowerUp from "./PowerUp.js";
 import Dragon from "./Dragon.js";
+import Golem from "./Golem.js";
+import Wraith from "./Wraith";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -33,10 +35,13 @@ class Game extends Phaser.Scene {
     this.beamSound = this.sound.add("beam_sound", {volume: 0.12});
     this.explodeSound = this.sound.add("explode_sound", { volume: 0.15 });
     this.pickupSound = this.sound.add("pickup_sound", {volume: 0.2});
-    this.music = this.sound.add("music");
+    this.music = this.sound.add("music" + this.level);
+    let volume = this.level === 1 ? 0.3 : 0.2;
+    if (this.level === 2 || this.level === 3) volume = 0.15;
+     
     let musicSettings = {
       mute: false,
-      volume: 0.3,
+      volume: volume,
       rate: 1,
       detune: 0,
       seek: 0,
@@ -45,7 +50,7 @@ class Game extends Phaser.Scene {
     };
     this.music.play(musicSettings);
 
-    this.background = this.add.tileSprite(0, 0, 1728, 1080, "cave1");
+    this.background = this.add.tileSprite(0, 0, 1728, 1080, "cave" + this.level);
     this.background.setOrigin(0,0);
 
     this.cursorKeys = this.input.keyboard.createCursorKeys();
@@ -100,7 +105,7 @@ class Game extends Phaser.Scene {
         this.currWave++;
         this.waveLabel.text = "Wave " + this.currWave + " / " + this.maxWaves;
         this.numEnemies += this.currWave > 3 ? 3 : 5;
-        if (this.currWave == 5) this.numEnemies = 3;
+        if (this.currWave == 5) this.numEnemies = 6;
         let currY = 80;
         let currX = 800;
         for (let i = 0; i < this.numEnemies; i++){
@@ -108,10 +113,10 @@ class Game extends Phaser.Scene {
               currY = currY == 680 ? 115 : 80;
               currX += 100;
             }
-            if (this.currWave > 4 && Math.floor(Math.random() * 2) === 0){
-              this.generateDragon(currX, currY);
+            if (this.currWave > 4 ){
+              this.generateMonster2(currX, currY);
             } else {
-              this.generateBat(currX, currY);
+              this.generateMonster1(currX, currY);
             }
             currY += 150;
         }
@@ -157,7 +162,7 @@ class Game extends Phaser.Scene {
     }
 
     // pet fire rate
-    if (this.timer % Math.floor(100 / this.petLevel) === 0){
+    if (this.timer % 80 === 0){
       new Beam(this, this.pet.x + 16, this.pet.y, "iceShard", "right");
     }
     this.timer += 1;
@@ -285,12 +290,37 @@ class Game extends Phaser.Scene {
     }
   }
 
-  generateBat(x, y){
-    new Bat(this, x, y);
+  generateMonster1(x, y){
+    if (this.level == 1){
+      new Bat(this, x, y);
+    } else if (this.level == 2){
+      if (Math.floor(Math.random() * 2) === 0){
+        new Dragon(this, x, y);
+      } else {
+        new Golem(this, x, y);
+      }
+    } else if (this.level >= 3) {
+      new Wraith(this, x, y);
+    }
   }
 
-  generateDragon(x, y){
-    new Dragon(this, x, y);
+  generateMonster2(x, y){
+    if (this.level == 1){
+      if (Math.floor(Math.random() * 2) === 0) {
+        new Dragon(this, x, y);
+      } else {
+        new Bat(this, x, y);
+      }
+    } else if (this.level == 2){
+      if (Math.floor(Math.random() * 2) === 0) {
+        new Wraith(this, x, y);
+      } else {
+        new Golem(this, x, y);
+      }
+    } else if (this.level >= 3) {
+      new Wraith(this, x, y);
+      new Golem(this, x + 50, y - 20);
+    }
   }
 
   updateHp(num){
@@ -314,7 +344,7 @@ class Game extends Phaser.Scene {
         this.updateHp(50);
         break;
       case "scoreUp":
-        this.addScore(100);
+        this.addScore(200 * this.level);
         break;
 
     }

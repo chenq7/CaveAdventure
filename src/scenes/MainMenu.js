@@ -1,12 +1,19 @@
 import Phaser from "phaser";
 import cave1 from "../assets/images/cave1.jpg";
+import cave2 from "../assets/images/cave2.jpg";
+import cave3 from "../assets/images/cave3.jpg";
+import cave4 from "../assets/images/cave4.jpg";
 import character from "../assets/images/character.png";
 import pet from "../assets/images/pet.png";
 import windSlash from "../assets/images/windSlash.png";
 import fireBlast from "../assets/images/fireBlast.png";
 import iceShard from "../assets/images/iceshard.png";
+import icicle from "../assets/images/icicle.png";
+import darkBullet from "../assets/images/darkBullet.png";
 import bat from "../assets/sprites/bats.png";
 import dragon from "../assets/sprites/dragon.png";
+import golem from "../assets/sprites/golem.png";
+import wraith from "../assets/sprites/wraith.png";
 import beam from "../assets/sprites/beam.png";
 import beam2 from "../assets/sprites/beam2.png";
 import beam3 from "../assets/sprites/beam3.png";
@@ -17,7 +24,10 @@ import fontImage from "../assets/font/font.png";
 import beamSound from "../assets/sound/beam.mp3";
 import selectSound from "../assets/sound/select.wav";
 import menuMusic from "../assets/sound/I miss you.mp3";
-import music from "../assets/sound/Lachrymose.mp3";
+import music1 from "../assets/sound/music1.mp3";
+import music2 from "../assets/sound/music2.mp3";
+import music3 from "../assets/sound/music3.mp3";
+import music4 from "../assets/sound/music4.mp3";
 import shopMusic from "../assets/sound/lost souls.mp3";
 import explodeSound from "../assets/sound/explosion.mp3";
 import pickupSound from "../assets/sound/pickup.mp3";
@@ -40,6 +50,9 @@ class MainMenu extends Phaser.Scene {
 
   preload() {
     this.load.image("cave1", cave1);
+    this.load.image("cave2", cave2);
+    this.load.image("cave3", cave3);
+    this.load.image("cave4", cave4);
     this.load.image("shopBackground", shopBackground);
     this.load.image("waveBackground", waveBackground);
     this.load.image("mainBackground", mainBackground);
@@ -49,6 +62,8 @@ class MainMenu extends Phaser.Scene {
     this.load.image("windSlash", windSlash);
     this.load.image("iceShard", iceShard);
     this.load.image("fireBlast", fireBlast);
+    this.load.image("icicle", icicle);
+    this.load.image("darkBullet", darkBullet);
 
     this.load.spritesheet("border", border, {
       frameWidth: 286,
@@ -78,6 +93,16 @@ class MainMenu extends Phaser.Scene {
     this.load.spritesheet("dragon", dragon, {
       frameWidth: 177,
       frameHeight: 126
+    });
+
+    this.load.spritesheet("golem", golem, {
+      frameWidth: 172.8,
+      frameHeight: 150
+    })
+
+    this.load.spritesheet("wraith", wraith, {
+      frameWidth: 103,
+      frameHeight: 83
     })
 
     this.load.spritesheet("explosion", explosion, {
@@ -112,7 +137,10 @@ class MainMenu extends Phaser.Scene {
     this.load.audio("pickup_sound", pickupSound);
     this.load.audio("select_sound", selectSound);
     this.load.audio("menuMusic", menuMusic);
-    this.load.audio("music", music);
+    this.load.audio("music1", music1);
+    this.load.audio("music2", music2);
+    this.load.audio("music3", music3);
+    this.load.audio("music4", music4);
     this.load.audio("shopMusic", shopMusic);
     this.load.audio("upgrade", upgradeSound);
     this.load.audio("error", errorSound);
@@ -125,14 +153,28 @@ class MainMenu extends Phaser.Scene {
     this.anims.create({
       key: "bat_animation",
       frames: this.anims.generateFrameNumbers("bat"),
-      frameRate: 20,
+      frameRate: 8,
       repeat: -1
     })
 
     this.anims.create({
       key: "dragon_animation",
       frames: this.anims.generateFrameNumbers("dragon"),
-      frameRate: 6,
+      frameRate: 4,
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: "golem_animation",
+      frames: this.anims.generateFrameNumbers("golem"),
+      frameRate: 1.5,
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: "wraith_animation",
+      frames: this.anims.generateFrameNumbers("wraith"),
+      frameRate: 5,
       repeat: -1
     })
 
@@ -190,7 +232,7 @@ class MainMenu extends Phaser.Scene {
       this.menuMusic.pause();
 
       this.scene.start('shop', {
-        gold: 5000,
+        gold: 2000,
         hp: 100,
         beamLevel: 1,
         petLevel: 1,
