@@ -128,7 +128,7 @@ class Game extends Phaser.Scene {
           }
         }
       } else {
-        this.endWave("Dungeon cleared! :)");
+        this.endWave("Dungeon cleared!");
       }
     }
 
