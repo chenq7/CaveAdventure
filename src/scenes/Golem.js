@@ -11,7 +11,7 @@ class Golem extends Phaser.GameObjects.Sprite {
 
     scene.add.existing(this);
 
-    this.setScale(0.52);
+    this.setScale(0.6);
     this.play("golem_animation");
     scene.physics.world.enableBody(this);
     this.body.velocity.x = -30;
@@ -19,7 +19,6 @@ class Golem extends Phaser.GameObjects.Sprite {
     scene.enemies.add(this);
 
     this.timer = 1;
-    this.isFired = false;
     this.hp = 22;
     this.damage = -81;
     this.value = 123;

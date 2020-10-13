@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 let graphics;
-let cursors;
+let keyC;
 
 class GameOver extends Phaser.Scene {
   constructor() {
@@ -19,7 +19,7 @@ class GameOver extends Phaser.Scene {
   }
 
   create() {
-    cursors = this.input.keyboard.createCursorKeys();
+    keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
     graphics = this.add.graphics();
     graphics.fillStyle(0x000000, 1);
@@ -27,13 +27,13 @@ class GameOver extends Phaser.Scene {
 
     this.add.text(325, 300, this.text);
     this.add.text(325, 330, `You managed to loot ${this.score} gold`);
-    this.add.text(325, 360, "Press space to continue.");
+    this.add.text(325, 360, "Press c to continue.");
 
   }
 
   update() {
 
-    if (cursors.space.isDown) {
+    if (keyC.isDown) {
       this.scene.start('shop', {
         gold: this.gold + this.score,
         hp: this.hp,

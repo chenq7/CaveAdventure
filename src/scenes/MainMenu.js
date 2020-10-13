@@ -10,10 +10,14 @@ import fireBlast from "../assets/images/fireBlast.png";
 import iceShard from "../assets/images/iceshard.png";
 import icicle from "../assets/images/icicle.png";
 import darkBullet from "../assets/images/darkBullet.png";
+import missle1 from "../assets/images/missle1.png";
+import missle2 from "../assets/images/missle2.png";
 import bat from "../assets/sprites/bats.png";
 import dragon from "../assets/sprites/dragon.png";
 import golem from "../assets/sprites/golem.png";
 import wraith from "../assets/sprites/wraith.png";
+import fairy from "../assets/sprites/fairy.png";
+import boss from "../assets/sprites/boss.png";
 import beam from "../assets/sprites/beam.png";
 import beam2 from "../assets/sprites/beam2.png";
 import beam3 from "../assets/sprites/beam3.png";
@@ -64,6 +68,8 @@ class MainMenu extends Phaser.Scene {
     this.load.image("fireBlast", fireBlast);
     this.load.image("icicle", icicle);
     this.load.image("darkBullet", darkBullet);
+    this.load.image("missle1", missle1);
+    this.load.image("missle2", missle2);
 
     this.load.spritesheet("border", border, {
       frameWidth: 286,
@@ -98,12 +104,22 @@ class MainMenu extends Phaser.Scene {
     this.load.spritesheet("golem", golem, {
       frameWidth: 172.8,
       frameHeight: 150
-    })
+    });
 
     this.load.spritesheet("wraith", wraith, {
       frameWidth: 103,
       frameHeight: 83
-    })
+    });
+
+    this.load.spritesheet("boss", boss, { 
+      frameWidth: 605,
+      frameHeight: 707
+    });
+
+    this.load.spritesheet("fairy", fairy, {
+      frameWidth: 125,
+      frameHeight: 141
+    });
 
     this.load.spritesheet("explosion", explosion, {
       frameWidth: 16,
@@ -179,6 +195,20 @@ class MainMenu extends Phaser.Scene {
     })
 
     this.anims.create({
+      key: "boss_animation",
+      frames: this.anims.generateFrameNumbers("boss"),
+      frameRate: 0.3,
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: "fairy_animation",
+      frames: this.anims.generateFrameNumbers("fairy"),
+      frameRate: 3,
+      repeat: -1
+    })
+
+    this.anims.create({
       key: "explode",
       frames: this.anims.generateFrameNames("explosion"),
       frameRate: 20,
@@ -222,7 +252,7 @@ class MainMenu extends Phaser.Scene {
     this.add.text(275, 430, "Press space to start.", { fontSize: '18px', color: 'yellow' });
 
     this.selectSound = this.sound.add("select_sound", { volume: 1 });
-    this.menuMusic = this.sound.add("menuMusic", { volume: 0.15 });
+    this.menuMusic = this.sound.add("menuMusic", { volume: 0.2 });
     this.menuMusic.play();
   }
 

@@ -6,6 +6,8 @@ import PowerUp from "./PowerUp.js";
 import Dragon from "./Dragon.js";
 import Golem from "./Golem.js";
 import Wraith from "./Wraith";
+import Boss from "./Boss";
+import Fairy from "./Fairy";
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -26,7 +28,7 @@ class Game extends Phaser.Scene {
     this.hp = this.maxHp;
     this.score = 0;
     this.timer = 0;
-    this.maxWaves = 12;
+    this.maxWaves = this.level == 4 ? 1 : 12;
     this.currWave = 0;
     this.currEnemies = 0;
     this.numEnemies = 0;
@@ -36,8 +38,8 @@ class Game extends Phaser.Scene {
     this.explodeSound = this.sound.add("explode_sound", { volume: 0.15 });
     this.pickupSound = this.sound.add("pickup_sound", {volume: 0.2});
     this.music = this.sound.add("music" + this.level);
-    let volume = this.level === 1 ? 0.3 : 0.2;
-    if (this.level === 2 || this.level === 3) volume = 0.15;
+    let volume = this.level === 1 ? 0.4 : 0.267;
+    if (this.level === 2 || this.level === 3) volume = 0.2;
      
     let musicSettings = {
       mute: false,
@@ -60,8 +62,8 @@ class Game extends Phaser.Scene {
     this.prevPlayerX = 200;
     this.prevPlayerY = 300;
     this.pet = this.physics.add.sprite(170, 300, "pet");
-    this.player.setScale(1.5);
-    this.pet.setScale(0.55);
+    this.player.setScale(1.3);
+    this.pet.setScale(0.5);
     this.player.setCollideWorldBounds(true);
     this.pet.setCollideWorldBounds(true);
     this.moveSpd = 300;
@@ -103,27 +105,36 @@ class Game extends Phaser.Scene {
     if (this.enemies.getChildren().length === 0){
       if (this.currWave < this.maxWaves){
         this.currWave++;
-        this.waveLabel.text = "Wave " + this.currWave + " / " + this.maxWaves;
-        this.numEnemies += this.currWave > 3 ? 3 : 5;
-        if (this.currWave == 5) this.numEnemies = 6;
-        let currY = 80;
-        let currX = 800;
-        for (let i = 0; i < this.numEnemies; i++){
-            if (currY > 580) {
-              currY = currY == 680 ? 115 : 80;
-              currX += 100;
-            }
-            if (this.currWave > 4 ){
-              this.generateMonster2(currX, currY);
-            } else {
-              this.generateMonster1(currX, currY);
-            }
-            currY += 150;
+        if (this.level == 4) {
+          new Boss(this, 800, 340);
+        } 
+        else {
+          this.waveLabel.text = "Wave " + this.currWave + " / " + this.maxWaves;
+          this.numEnemies += this.currWave > 3 ? 3 : 5;
+          if (this.currWave == 5) this.numEnemies = 6;
+          let currY = 80;
+          let currX = 800;
+          for (let i = 0; i < this.numEnemies; i++){
+              if (currY > 580) {
+                currY = currY == 680 ? 115 : 80;
+                currX += 100;
+              }
+              if (this.currWave > 4 ){
+                this.generateMonster2(currX, currY);
+              } else {
+                this.generateMonster1(currX, currY);
+              }
+              currY += 150;
+          }
         }
-      }
-      else {
+      } else {
         this.endWave("Dungeon cleared! :)");
       }
+    }
+
+    if (this.level == 4 && this.timer % 900 === 0) {
+      new Fairy(this, 550, 50, "top");
+      new Fairy(this, 550, 550, "bottom");
     }
 
     this.movePlayer();
