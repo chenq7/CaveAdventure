@@ -34,12 +34,12 @@ class Game extends Phaser.Scene {
     this.numEnemies = 0;
     this.powerupTypes = ["healthUp", "scoreUp"]; //powerUp
 
-    this.beamSound = this.sound.add("beam_sound", {volume: 0.12});
-    this.explodeSound = this.sound.add("explode_sound", { volume: 0.15 });
-    this.pickupSound = this.sound.add("pickup_sound", {volume: 0.2});
+    this.beamSound = this.sound.add("beam_sound", {volume: 0.095});
+    this.explodeSound = this.sound.add("explode_sound", { volume: 0.11 });
+    this.pickupSound = this.sound.add("pickup_sound", {volume: 0.16});
     this.music = this.sound.add("music" + this.level);
-    let volume = this.level === 1 ? 0.4 : 0.267;
-    if (this.level === 2 || this.level === 3) volume = 0.2;
+    let volume = this.level === 1 ? 0.32 : 0.21;
+    if (this.level === 2 || this.level === 3) volume = 0.16;
      
     let musicSettings = {
       mute: false,
@@ -110,7 +110,7 @@ class Game extends Phaser.Scene {
         } 
         else {
           this.waveLabel.text = "Wave " + this.currWave + " / " + this.maxWaves;
-          this.numEnemies += this.currWave > 3 ? 3 : 5;
+          this.numEnemies += this.currWave > 3 ? 3 : 4;
           if (this.currWave == 5) this.numEnemies = 6;
           let currY = 80;
           let currX = 800;
@@ -271,7 +271,7 @@ class Game extends Phaser.Scene {
     if (this.player.alpha < 1) return;
     this.explodeSound.play();
     this.updateHp(enemy.damage);
-    enemy.destroy();
+    enemy.hp -= 100;
     new Explosion(this, enemy.x, enemy.y);
 
     this.immune();

@@ -16,7 +16,7 @@ class Shop extends Phaser.Scene {
     if (data.music){
       this.music = data.music;
     } else {
-      this.music = this.sound.add("shopMusic", { volume: 0.133 });
+      this.music = this.sound.add("shopMusic", { volume: 0.13 });
       this.music.play();
     }
   }
@@ -26,7 +26,7 @@ class Shop extends Phaser.Scene {
     this.add.image(450, 300, "shopBackground");
 
     cursors = this.input.keyboard.createCursorKeys();
-    this.errorSound = this.sound.add("error", { volume: 0.3 });
+    this.errorSound = this.sound.add("error", { volume: 0.24 });
     this.upgradeSound = this.sound.add("upgrade", { volume: 0.3 });
 
     let goldFormated = this.zeroPad(this.gold, 6);
@@ -71,12 +71,14 @@ class Shop extends Phaser.Scene {
     this.add.text(270, 490, "Click here to start", { fontSize: "28px" });
 
     this.input.on('gameobjectdown', this.buyUpgrade, this);
-    this.bulletLabel = this.add.bitmapText(315, 200, "pixelFont", this.beamLevel, 25);
+    let beam = this.beamLevel >= 9 ? "Max" : this.beamLevel;
+    let pet = this.petLevel >= 9 ? "Max" : this.petLevel;
+    this.bulletLabel = this.add.bitmapText(315, 200, "pixelFont", beam, 25);
     this.hpLabel = this.add.bitmapText(620, 200, "pixelFont", this.hp, 25);
-    this.petLabel = this.add.bitmapText(290, 350, "pixelFont", this.petLevel, 25);
+    this.petLabel = this.add.bitmapText(290, 350, "pixelFont", pet, 25);
     this.regenLabel = this.add.bitmapText(625, 350, "pixelFont", this.regenLevel, 25);
 
-    this.selectSound = this.sound.add("select_sound", { volume: 0.6 });
+    this.selectSound = this.sound.add("select_sound", { volume: 0.5 });
   }
 
   update() {
@@ -94,13 +96,13 @@ class Shop extends Phaser.Scene {
 
   buyUpgrade(pointer, gameObject){
     if (gameObject.x === 273 && gameObject.y === 220){
-      if (this.gold >= this.bulletPrice){
+      if (this.gold >= this.bulletPrice && this.beamLevel < 9){
         this.gold -= this.bulletPrice;
         this.bulletPrice += 1000;
         this.beamLevel += 1;
         this.goldLabel.text = this.zeroPad(this.gold, 6);
         this.bulletPriceLabel.text = "Upgrade for " + this.zeroPad(this.bulletPrice, 5);
-        this.bulletLabel.text = this.beamLevel;
+        this.bulletLabel.text = this.beamLevel >= 9 ? "Max" : this.beamLevel;
         this.upgradeSound.play();
       } else {
         this.errorSound.play();
@@ -119,13 +121,13 @@ class Shop extends Phaser.Scene {
         this.errorSound.play();
       }
     } else if (gameObject.x === 273 && gameObject.y === 370) {
-      if (this.gold >= this.petPrice){
+      if (this.gold >= this.petPrice && this.petLevel < 9){
         this.gold -= this.petPrice;
         this.petPrice += 1000;
         this.petLevel += 1;
         this.goldLabel.text = this.zeroPad(this.gold, 6);
         this.petPriceLabel.text = "Upgrade for " + this.zeroPad(this.petPrice, 5);
-        this.petLabel.text = this.petLevel;
+        this.petLabel.text = this.petLevel >= 9 ? "Max" : this.petLevel;
         this.upgradeSound.play();
       } else {
         this.errorSound.play();

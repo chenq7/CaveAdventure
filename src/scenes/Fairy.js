@@ -20,13 +20,13 @@ class Fairy extends Phaser.GameObjects.Sprite {
     this.yDir = Math.random() * 51;
     if (position === "bottom") this.yDir = -this.yDir;
     this.timer = 1;
-    this.hp = 100;
+    this.hp = 70;
     this.damage = -171;
     this.value = 500;
   }
 
   update() {
-    if (this.x < 0) {
+    if (this.x < 0 || this.hp <= 0) {
       this.destroy();
     }
 

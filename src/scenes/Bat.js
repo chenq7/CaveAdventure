@@ -28,7 +28,7 @@ class Bat extends Phaser.GameObjects.Sprite {
   }
 
   update() {
-    if (this.x < 0) {
+    if (this.x < 0 || this.hp <= 0) {
       this.destroy();
     }
 

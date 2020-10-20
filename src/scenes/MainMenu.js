@@ -251,8 +251,8 @@ class MainMenu extends Phaser.Scene {
     this.add.text(275, 400, "Press spacebar to shoot.", { fontSize: '18px', color: 'yellow' });
     this.add.text(275, 430, "Press space to start.", { fontSize: '18px', color: 'yellow' });
 
-    this.selectSound = this.sound.add("select_sound", { volume: 1 });
-    this.menuMusic = this.sound.add("menuMusic", { volume: 0.2 });
+    this.selectSound = this.sound.add("select_sound", { volume: 0.85 });
+    this.menuMusic = this.sound.add("menuMusic", { volume: 0.16 });
     this.menuMusic.play();
   }
 
@@ -262,7 +262,7 @@ class MainMenu extends Phaser.Scene {
       this.menuMusic.pause();
 
       this.scene.start('shop', {
-        gold: 2000,
+        gold: 999999,
         hp: 100,
         beamLevel: 1,
         petLevel: 1,
