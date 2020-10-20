@@ -1,9 +1,9 @@
 {
-    "name": "mintbean-phaserjs-template",
+    "name": "cave_adventure",
     "version": "1.0.0",
-    "description": "Mintbean's template for PhaserJS games.",
+    "description": "2D fantasy shooter game where the user controls a character (along with a pet) to fight off waves of monsters",
     "main": "index.js",
-    "author": "monarch@mintbean.io",
+    "author": "qixiang100@gmail.com",
     "license": "MIT",
     "private": true,
     "scripts": {

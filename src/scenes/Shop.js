@@ -16,7 +16,7 @@ class Shop extends Phaser.Scene {
     if (data.music){
       this.music = data.music;
     } else {
-      this.music = this.sound.add("shopMusic", { volume: 0.13 });
+      this.music = this.sound.add("shopMusic", { volume: 0.12 });
       this.music.play();
     }
   }

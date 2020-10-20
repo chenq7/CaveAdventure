@@ -34,12 +34,12 @@ class Game extends Phaser.Scene {
     this.numEnemies = 0;
     this.powerupTypes = ["healthUp", "scoreUp"]; //powerUp
 
-    this.beamSound = this.sound.add("beam_sound", {volume: 0.095});
-    this.explodeSound = this.sound.add("explode_sound", { volume: 0.11 });
+    this.beamSound = this.sound.add("beam_sound", {volume: 0.08});
+    this.explodeSound = this.sound.add("explode_sound", { volume: 0.1 });
     this.pickupSound = this.sound.add("pickup_sound", {volume: 0.16});
     this.music = this.sound.add("music" + this.level);
-    let volume = this.level === 1 ? 0.32 : 0.21;
-    if (this.level === 2 || this.level === 3) volume = 0.16;
+    let volume = this.level === 1 ? 0.25 : 0.2;
+    if (this.level === 2 || this.level === 3) volume = 0.15;
      
     let musicSettings = {
       mute: false,
