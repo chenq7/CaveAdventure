@@ -26,4 +26,7 @@ In Cave Adventure, users will be able to:
 
 [Itch.io](https://itch.io/game-assets/free) - for game assets.
 
+### Home screen
+![](src/assets/images/home_screen.png)
+
 
