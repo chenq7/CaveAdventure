@@ -29,7 +29,7 @@ In Cave Adventure, users will be able to:
 ### Home screen
 ![](src/assets/images/home_screen.png)
 
-The game starts by rendering the home screen with an onclick listener set for the spacebar key to start the game while preloading the assets.
+The game starts by rendering the home screen with an onclick listener set for the spacebar key to start the game while preloading assets.
 
 
 ### Upgrade screen
